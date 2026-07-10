@@ -35,6 +35,8 @@ class PriceEngine
         $result->trace = new PriceTrace();
         $result->context = $context;
 
+        $result->trace->add('Context Loaded', $context);
+
         $result = (new RuleResolver())->resolve($context, $result);
 
         $result = (new OverrideResolver())->resolve($context, $result);
