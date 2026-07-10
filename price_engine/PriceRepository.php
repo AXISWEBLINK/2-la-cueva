@@ -94,7 +94,13 @@ class PriceRepository
 
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    return $row ?: [];
+if (!$row) {
+    throw new RuntimeException(
+        "PriceEngine: no se encontró el contexto del producto '{$productId}' para la lista '{$priceListId}'."
+    );
+}
+
+return $row;
 }
     public function getCampaigns(
     string $productId,
