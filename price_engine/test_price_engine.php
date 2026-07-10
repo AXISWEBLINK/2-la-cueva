@@ -19,6 +19,18 @@ try {
         'f4dcd91d-74e1-11f1-8ac9-fa163edb0855'
     );
 
+echo '<h2>FINAL PRICE:</h2>';
+var_dump($result->finalPrice);
+
+echo '<h2>CAMPAÑAS:</h2>';
+print_r($result->campaigns);
+
+echo '<h2>TRACE:</h2>';
+print_r($result->trace);
+
+echo '<h2>OBJETO COMPLETO:</h2>';
+print_r($result);
+
     echo '<pre>';
     print_r($result);
     echo '</pre>';

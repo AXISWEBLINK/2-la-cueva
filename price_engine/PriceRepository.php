@@ -97,14 +97,88 @@ class PriceRepository
     return $row ?: [];
 }
     public function getCampaigns(
-        string $productId,
-        string $providerId,
-        string $groupId,
-        string $priceListId
-    ): array {
+    string $productId,
+    string $providerId,
+    string $groupId,
+    string $priceListId
+): array {
 
-        // SQL CampaignContext
+    $sql = "
 
-        return [];
-    }
+    SELECT
+
+        c.*
+
+    FROM price_campaigns c
+
+    INNER JOIN price_campaign_targets t
+            ON t.campaign_id = c.id
+
+    WHERE
+
+        c.is_active = 1
+
+    AND
+
+        t.is_active = 1
+
+    AND
+    (
+
+        t.target_type='all_products'
+
+        OR
+
+        (
+            t.target_type='product'
+            AND t.target_uuid=:product_id
+        )
+
+        OR
+
+        (
+            t.target_type='price_group'
+            AND t.target_uuid=:group_id
+        )
+
+        OR
+
+        (
+            t.target_type='provider'
+            AND t.target_uuid=:provider_id
+        )
+
+    )
+
+    AND
+
+    (
+
+        t.price_list_id IS NULL
+
+        OR
+
+        t.price_list_id=:price_list_id
+
+    )
+
+    ORDER BY
+
+        t.apply_order,
+
+        c.priority
+
+    ";
+
+    $stmt = $this->pdo->prepare($sql);
+
+    $stmt->execute([
+        ':product_id'   => $productId,
+        ':provider_id'  => $providerId,
+        ':group_id'     => $groupId,
+        ':price_list_id'=> $priceListId
+    ]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+    }
