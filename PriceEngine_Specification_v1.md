@@ -8,6 +8,8 @@ Ningún módulo del sistema (Ventas, Presupuestos, Web, Mercado Libre, API, etc.
 
 Todos deben utilizar PriceEngine.
 
+
+
 ---
 
 # Entrada
@@ -178,6 +180,7 @@ Nunca devuelve solamente un número.
 
 Debe contener como mínimo:
 
+ej:
 - cost_net
 - cost_adjusted
 - sale_net
@@ -233,3 +236,17 @@ Toda decisión debe salir de las tablas del motor.
 El único responsable del precio final es PriceEngine.
 
 Fin de la especificación.
+
+ej:
+PriceEngine::resolve(producto_id, price_list_id)
+
+Devuelve un objeto PriceResult.
+
+Flujo ej:
+
+1. Contexto
+2. Regla
+3. Override
+4. Campañas
+5. Redondeo
+6. Resultado final

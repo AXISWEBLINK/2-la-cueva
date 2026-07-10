@@ -34,17 +34,15 @@ class PriceEngine
         $result->priceListId = $priceListId;
         $result->trace = new PriceTrace();
         $result->context = $context;
-echo "<h3>Contexto recibido</h3>";
-echo "<pre>";
-print_r($context);
-echo "</pre>";
-exit;
+
         $result = (new RuleResolver())->resolve($context, $result);
 
-echo "<h3>Después de RuleResolver</h3>";
-echo "<pre>";
-print_r($result);
-echo "</pre>";
-exit;
+        $result = (new OverrideResolver())->resolve($context, $result);
+
+        $result = (new CampaignResolver())->resolve($campaigns, $result);
+
+        $result = (new RoundingResolver())->resolve($context, $result);
+
+        return $result;
     }
 }

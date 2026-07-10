@@ -1,0 +1,416 @@
+SQL Resumido para enviar
+
+
+TABLA: categorias
+
+CREATE TABLE `categorias` (
+  `id` char(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `nombre` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `parent_id` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `delete_block` tinyint NOT NULL DEFAULT '0' COMMENT '0 se puede eliminarr 1 no se puede eliminar',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_active` tinyint(1) DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+Mas datos:
+ALTER TABLE `categorias`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_parent` (`parent_id`),
+  ADD KEY `idx_nombre` (`nombre`);
+ALTER TABLE `categorias`
+  ADD CONSTRAINT `fk_categorias_parent` FOREIGN KEY (`parent_id`) REFERENCES `categorias` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+INSERT INTO `categorias` (`id`, `nombre`, `parent_id`, `delete_block`, `created_at`, `updated_at`, `is_active`) VALUES
+('14b3f64f-740a-11f1-8ac9-fa163edb0855', 'Vasos', '954e880a-7409-11f1-8ac9-fa163edb0855', 0, '2026-06-29 22:30:07', '2026-06-29 22:30:07', 1),
+('45f55be9-28e6-11f1-8125-fa163edb0855', 'Pesca', NULL, 1, '2026-06-10 02:40:58', '2026-06-12 20:33:24', 1),
+('51271a4e-28e6-11f1-8125-fa163edb0855', 'Reeles', '45f55be9-28e6-11f1-8125-fa163edb0855', 0, '2026-06-10 02:40:58', '2026-06-10 02:40:58', 1),
+('549a404b-70e2-11f1-afe8-fa163edb0855', 'Linternas', '86533055-2a36-11f1-8125-fa163edb0855', 0, '2026-06-25 22:08:00', '2026-06-25 22:08:00', 1),
+('6932533e-28e6-11f1-8125-fa163edb0855', 'Frontales', '51271a4e-28e6-11f1-8125-fa163edb0855', 0, '2026-06-10 02:40:58', '2026-06-10 02:40:58', 1),
+('6db228ff-28e6-11f1-8125-fa163edb0855', 'Rotativos', '51271a4e-28e6-11f1-8125-fa163edb0855', 0, '2026-06-10 02:40:58', '2026-06-10 02:40:58', 1),
+('86533055-2a36-11f1-8125-fa163edb0855', 'Caza', NULL, 1, '2026-06-10 02:40:58', '2026-06-12 20:33:26', 1),
+('954e880a-7409-11f1-8ac9-fa163edb0855', 'Camping', NULL, 0, '2026-06-29 22:26:33', '2026-06-29 22:26:33', 1),
+('a1dc948e-71b3-11f1-afe8-fa163edb0855', 'Indumentaria', NULL, 0, '2026-06-26 23:06:15', '2026-06-26 23:06:15', 1),
+('b34bfd22-71b3-11f1-afe8-fa163edb0855', 'Gorras', 'a1dc948e-71b3-11f1-afe8-fa163edb0855', 0, '2026-06-26 23:06:44', '2026-06-26 23:06:44', 1),
+('b38e75c2-73e3-11f1-8ac9-fa163edb0855', 'Z Categoria de pruebas', NULL, 0, '2026-06-29 17:55:23', '2026-06-29 17:55:23', 1),
+('df81c5f8-6474-11f1-afe8-fa163edb0855', 'SIN CATEGORIA', NULL, 1, '2026-06-10 02:40:58', '2026-06-12 20:33:01', 1);
+
+
+
+TABLA: categorias_productos
+
+CREATE TABLE `categorias_productos` (
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'UUID de la relación producto-categoría',
+  `producto_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Tabla productos columna id uuid',
+  `categoria_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'tabla categorias columna id',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_active` tinyint(1) DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+Mas datos:
+ALTER TABLE `categorias_productos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uniq_prod_cat` (`producto_id`,`categoria_id`),
+  ADD KEY `idx_categoria` (`categoria_id`),
+  ADD KEY `idx_categoria_active` (`categoria_id`,`is_active`,`producto_id`);
+ALTER TABLE `categorias_productos`
+  ADD CONSTRAINT `fk_cp_producto` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_pc_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+No se encontraron datos INSERT para esta tabla.
+
+
+
+TABLA: marcas
+
+CREATE TABLE `marcas` (
+  `id` char(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `nombre` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `slug` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `descripcion` text COLLATE utf8mb4_general_ci,
+  `sitio_web` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `fecha_creacion` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+Mas datos:
+ALTER TABLE `marcas`
+  ADD PRIMARY KEY (`id`);
+
+No se encontraron datos INSERT para esta tabla.
+
+
+
+TABLA: price_calculation_rules
+
+CREATE TABLE `price_calculation_rules` (
+  `id` char(36) COLLATE utf8mb4_general_ci NOT NULL DEFAULT (uuid()) COMMENT 'UUID de la regla',
+  `price_group_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Grupo del proveedor tabla price_provider_groups',
+  `price_list_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Lista de precios tabla price_lists_name',
+  `base_markup_percent` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT 'COMMENT ''Recargo sobre el costo (ej.: IVA del costo si el proveedor informa precios netos)''',
+  `vat_percent` decimal(9,4) NOT NULL DEFAULT '21.0000' COMMENT 'IVA',
+  `price_markup_percent` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT 'Margen comercial',
+  `adjustment_percent` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT 'Ajuste final',
+  `priority` smallint UNSIGNED NOT NULL DEFAULT '100' COMMENT 'Prioridad futura',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `notes` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+Mas datos:
+ALTER TABLE `price_calculation_rules`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_group_list` (`price_group_id`,`price_list_id`),
+  ADD KEY `idx_group_active` (`price_group_id`,`is_active`),
+  ADD KEY `idx_list_active` (`price_list_id`,`is_active`);
+ALTER TABLE `price_calculation_rules`
+  ADD CONSTRAINT `fk_pplr_group` FOREIGN KEY (`price_group_id`) REFERENCES `price_provider_groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_pplr_list` FOREIGN KEY (`price_list_id`) REFERENCES `price_lists_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+INSERT INTO `price_calculation_rules` (`id`, `price_group_id`, `price_list_id`, `base_markup_percent`, `vat_percent`, `price_markup_percent`, `adjustment_percent`, `priority`, `is_active`, `notes`, `created_at`, `updated_at`) VALUES
+('1eab65e4-7b4e-11f1-8ac9-fa163edb0855', 'a4373ff7-7b4d-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-09 04:24:47', '2026-07-09 04:25:42'),
+('6025c6f8-7b48-11f1-8ac9-fa163edb0855', '6d23372c-7b46-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 100.0000, 0.0000, 100, 1, NULL, '2026-07-09 03:43:40', '2026-07-09 03:43:40'),
+('62f04eb5-7b47-11f1-8ac9-fa163edb0855', '3d34987e-7b46-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-09 03:36:35', '2026-07-09 03:36:35'),
+('6e7d9d04-7b4f-11f1-8ac9-fa163edb0855', '3d34987e-7b46-11f1-8ac9-fa163edb0855', 'f4dcdbf5-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 45.0000, 0.0000, 100, 1, NULL, '2026-07-09 04:34:11', '2026-07-09 04:34:11'),
+('f4cff0b5-7b4c-11f1-8ac9-fa163edb0855', 'a4086b02-7b4b-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, -10.0000, 100, 1, NULL, '2026-07-09 04:16:28', '2026-07-09 04:17:47');
+
+
+
+TABLA: price_campaign_targets
+
+CREATE TABLE `price_campaign_targets` (
+  `id` char(36) COLLATE utf8mb4_general_ci NOT NULL DEFAULT (uuid()) COMMENT 'UUID del destino',
+  `campaign_id` char(36) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Campaña',
+  `target_type` enum('all_products','product','provider','price_group','brand','category') COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Tipo de destino',
+  `target_uuid` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'UUID del producto, proveedor, grupo, marca o categoría. NULL cuando target_type = all_products',
+  `price_list_id` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'NULL = aplica a todas las listas',
+  `apply_order` smallint UNSIGNED NOT NULL DEFAULT '100' COMMENT 'Orden de aplicación',
+  `priority` smallint UNSIGNED NOT NULL DEFAULT '100' COMMENT 'Prioridad dentro del mismo orden',
+  `match_mode` enum('include','exclude') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'include',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `notes` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+Mas datos:
+ALTER TABLE `price_campaign_targets`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_campaign` (`campaign_id`,`is_active`),
+  ADD KEY `idx_target` (`target_type`,`target_uuid`),
+  ADD KEY `idx_price_list` (`price_list_id`),
+  ADD KEY `idx_apply` (`apply_order`,`priority`);
+ALTER TABLE `price_campaign_targets`
+  ADD CONSTRAINT `fk_pct_campaign` FOREIGN KEY (`campaign_id`) REFERENCES `price_campaigns` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_pct_price_list` FOREIGN KEY (`price_list_id`) REFERENCES `price_lists_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+INSERT INTO `price_campaign_targets` (`id`, `campaign_id`, `target_type`, `target_uuid`, `price_list_id`, `apply_order`, `priority`, `match_mode`, `is_active`, `notes`, `created_at`, `updated_at`) VALUES
+('1f66ea4f-7bde-11f1-8ac9-fa163edb0855', '6c8e47ec-7bd8-11f1-8ac9-fa163edb0855', 'provider', '412222e6-603e-11f1-afe8-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 100, 100, 'include', 1, NULL, '2026-07-09 21:35:36', '2026-07-10 05:03:06'),
+('48df06ad-7c0b-11f1-8ac9-fa163edb0855', '6c8e47ec-7bd8-11f1-8ac9-fa163edb0855', 'product', '1124d263-6df9-11f1-afe8-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 100, 100, 'include', 1, NULL, '2026-07-10 02:58:53', '2026-07-10 05:05:35');
+
+
+
+TABLA: price_campaigns
+
+CREATE TABLE `price_campaigns` (
+  `id` char(36) COLLATE utf8mb4_general_ci NOT NULL DEFAULT (uuid()) COMMENT 'UUID de la campaña',
+  `code` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Código interno',
+  `name` varchar(150) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Nombre de la campaña',
+  `description` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `discount_type` enum('percent','fixed_amount','fixed_price') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'percent' COMMENT 'Tipo de descuento percent-porcentage fixed-precio-fijo amount-descuenta-monto-fijo',
+  `discount_value` decimal(15,2) NOT NULL DEFAULT '0.00' COMMENT 'Valor del descuento',
+  `priority` smallint UNSIGNED NOT NULL DEFAULT '100' COMMENT 'Mayor prioridad = primero',
+  `stackable` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Permite combinar con otras campañas',
+  `stop_processing` tinyint NOT NULL DEFAULT '0' COMMENT 'se aplica y no busca mas campañas',
+  `starts_at` datetime DEFAULT NULL,
+  `ends_at` datetime DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `notes` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+Mas datos:
+ALTER TABLE `price_campaigns`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_campaign_code` (`code`),
+  ADD KEY `idx_campaign_active` (`is_active`,`starts_at`,`ends_at`);
+
+INSERT INTO `price_campaigns` (`id`, `code`, `name`, `description`, `discount_type`, `discount_value`, `priority`, `stackable`, `stop_processing`, `starts_at`, `ends_at`, `is_active`, `notes`, `created_at`, `updated_at`) VALUES
+('6c8e428c-7bd8-11f1-8ac9-fa163edb0855', 'HOTSALE', 'Hot Sale', NULL, 'percent', 20.00, 100, 0, 0, NULL, NULL, 1, NULL, '2026-07-09 20:54:48', '2026-07-09 22:07:15'),
+('6c8e46ed-7bd8-11f1-8ac9-fa163edb0855', '15DESCUENTO', '%15 DESCUENTO', NULL, 'percent', 15.00, 90, 0, 0, NULL, NULL, 1, NULL, '2026-07-09 20:54:48', '2026-07-09 22:03:05'),
+('6c8e47ec-7bd8-11f1-8ac9-fa163edb0855', '10DESCUENTO', '%10 DESCUENTO', NULL, 'percent', 10.00, 200, 1, 0, NULL, NULL, 1, NULL, '2026-07-09 20:54:48', '2026-07-09 22:07:00'),
+('6c8e484b-7bd8-11f1-8ac9-fa163edb0855', '19999PRECIOF', '$19999 Precio fijo', NULL, 'fixed_price', 19999.00, 50, 0, 0, NULL, NULL, 1, NULL, '2026-07-09 20:54:48', '2026-07-09 22:37:05');
+
+
+
+TABLA: price_lists_name
+
+CREATE TABLE `price_lists_name` (
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT (uuid()),
+  `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `channel` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'internal',
+  `sort_order` smallint UNSIGNED NOT NULL DEFAULT '100',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `is_default_budget` tinyint(1) NOT NULL DEFAULT '0',
+  `is_default_export` tinyint(1) NOT NULL DEFAULT '0',
+  `is_default_web` tinyint(1) NOT NULL DEFAULT '0',
+  `apply_rounding` tinyint(1) NOT NULL DEFAULT '0',
+  `rounding_mode` enum('none','round','ceil','floor','psychological') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'none',
+  `rounding_step` decimal(10,2) NOT NULL DEFAULT '1.00',
+  `show_decimals` tinyint(1) NOT NULL DEFAULT '1',
+  `prices_include_vat` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+Mas datos:
+ALTER TABLE `price_lists_name`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_price_lists_v2_code` (`code`),
+  ADD KEY `idx_price_lists_v2_active_order` (`is_active`,`sort_order`);
+
+INSERT INTO `price_lists_name` (`id`, `code`, `name`, `channel`, `sort_order`, `is_active`, `is_default_budget`, `is_default_export`, `is_default_web`, `apply_rounding`, `rounding_mode`, `rounding_step`, `show_decimals`, `prices_include_vat`, `created_at`, `updated_at`) VALUES
+('dd16049d-74f1-11f1-8ac9-fa163edb0855', 'mercadolibre', 'Mercadolibre', 'mercadolibre', 60, 1, 0, 0, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 02:09:17', '2026-07-09 04:29:07'),
+('f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 'lista_mostrador', 'Lista Mostrador', 'mostrador', 10, 1, 1, 1, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-09 04:14:11'),
+('f4dcda7f-74e1-11f1-8ac9-fa163edb0855', 'efectivo', 'Efectivo', 'efectivo', 20, 1, 0, 0, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-09 04:14:29'),
+('f4dcdbb1-74e1-11f1-8ac9-fa163edb0855', 'web', 'Web', 'web', 40, 1, 0, 0, 1, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-01 00:15:24'),
+('f4dcdbf5-74e1-11f1-8ac9-fa163edb0855', 'mayorista', 'Mayorista', 'mayorista', 50, 1, 0, 0, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-09 04:28:39');
+
+
+
+TABLA: price_moneda
+
+CREATE TABLE `price_moneda` (
+  `id` tinyint NOT NULL COMMENT 'ID de la moneda',
+  `codigo` varchar(10) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ARS, USD, EUR...',
+  `nombre` varchar(100) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Nombre de la moneda',
+  `simbolo` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '$, U$S, €',
+  `cotizacion` decimal(15,6) NOT NULL DEFAULT '1.000000' COMMENT 'Valor respecto al peso base',
+  `activo` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1=Activa, 0=Inactiva',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+Mas datos:
+ALTER TABLE `price_moneda`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uk_codigo` (`codigo`);
+
+INSERT INTO `price_moneda` (`id`, `codigo`, `nombre`, `simbolo`, `cotizacion`, `activo`, `created_at`, `updated_at`) VALUES
+(1, 'ARS', 'Peso Argentino', '$', 1.000000, 1, '2026-07-04 14:10:24', '2026-07-04 14:10:24'),
+(2, 'USD', 'Dólar Estadounidense', 'U$S', 1522.000000, 1, '2026-07-04 14:10:24', '2026-07-04 14:10:52');
+
+
+
+TABLA: price_product_overrides
+
+CREATE TABLE `price_product_overrides` (
+  `id` char(36) COLLATE utf8mb4_general_ci NOT NULL DEFAULT (uuid()) COMMENT 'UUID de la excepción',
+  `producto_id` char(36) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Producto',
+  `price_list_id` char(36) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Lista de precios',
+  `manual_price_net` decimal(15,2) DEFAULT NULL COMMENT 'Precio manual sin IVA',
+  `manual_price_gross` decimal(15,2) DEFAULT NULL COMMENT 'Precio manual con IVA',
+  `priority` smallint UNSIGNED NOT NULL DEFAULT '100' COMMENT 'Prioridad futura',
+  `starts_at` datetime DEFAULT NULL COMMENT 'Desde',
+  `ends_at` datetime DEFAULT NULL COMMENT 'Hasta',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `notes` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+Mas datos:
+ALTER TABLE `price_product_overrides`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_product_list` (`producto_id`,`price_list_id`),
+  ADD KEY `idx_producto` (`producto_id`,`is_active`),
+  ADD KEY `idx_lista` (`price_list_id`,`is_active`);
+ALTER TABLE `price_product_overrides`
+  ADD CONSTRAINT `fk_ppo_lista` FOREIGN KEY (`price_list_id`) REFERENCES `price_lists_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_ppo_producto` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+INSERT INTO `price_product_overrides` (`id`, `producto_id`, `price_list_id`, `manual_price_net`, `manual_price_gross`, `priority`, `starts_at`, `ends_at`, `is_active`, `notes`, `created_at`, `updated_at`) VALUES
+('35df28d4-7b65-11f1-8ac9-fa163edb0855', '1124d263-6df9-11f1-afe8-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', NULL, 99999.00, 100, NULL, NULL, 1, NULL, '2026-07-09 07:10:05', '2026-07-09 07:10:05');
+
+
+
+TABLA: price_provider_groups
+
+CREATE TABLE `price_provider_groups` (
+  `id` char(36) COLLATE utf8mb4_general_ci NOT NULL DEFAULT (uuid()) COMMENT 'UUID del grupo',
+  `proveedor_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'tabla provider',
+  `group_code` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'GENERAL, ARMAS, STANLEY',
+  `nombre` varchar(150) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Nombre del grupo',
+  `descripcion` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `orden` smallint UNSIGNED NOT NULL DEFAULT '100',
+  `is_default` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Grupo por defecto',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+Mas datos:
+ALTER TABLE `price_provider_groups`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_provider_group` (`proveedor_id`,`group_code`),
+  ADD KEY `idx_provider` (`proveedor_id`,`is_active`);
+ALTER TABLE `price_provider_groups`
+  ADD CONSTRAINT `fk_price_provider_groups_provider` FOREIGN KEY (`proveedor_id`) REFERENCES `provider` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+INSERT INTO `price_provider_groups` (`id`, `proveedor_id`, `group_code`, `nombre`, `descripcion`, `orden`, `is_default`, `is_active`, `created_at`, `updated_at`) VALUES
+('3d34987e-7b46-11f1-8ac9-fa163edb0855', '412222e6-603e-11f1-afe8-fa163edb0855', 'GENERAL', 'General', 'General de Proveedor      Baraldo', 100, 1, 1, '2026-07-09 03:28:22', '2026-07-09 04:08:18'),
+('6d23372c-7b46-11f1-8ac9-fa163edb0855', '412222e6-603e-11f1-afe8-fa163edb0855', 'ACEITES', 'Aceites', 'Grupo: Aceites proveedor Baraldo', 100, 0, 1, '2026-07-09 03:29:43', '2026-07-09 04:09:13'),
+('a4086b02-7b4b-11f1-8ac9-fa163edb0855', 'fe2762bf-6adf-11f1-afe8-fa163edb0855', 'GENERAL', 'General', 'General de Proveedor      Wescamp', 100, 1, 1, '2026-07-09 04:07:02', '2026-07-09 04:08:32'),
+('a4373ff7-7b4d-11f1-8ac9-fa163edb0855', 'fe2762bf-6adf-11f1-afe8-fa163edb0855', 'CONTIGO', 'Contigo', 'Grupo Contigo de proveedor Wescamp', 100, 0, 1, '2026-07-09 04:21:22', '2026-07-09 04:21:22');
+
+
+
+TABLA: productos
+
+CREATE TABLE `productos` (
+  `increm` int NOT NULL,
+  `id` char(36) COLLATE utf8mb4_general_ci NOT NULL DEFAULT (uuid()),
+  `id_producto` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sku` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `gtin13` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Nombre del producto',
+  `name2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Extencion de nomber de producto',
+  `proveedor_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '36112571-690a-11f1-afe8-fa163edb0855',
+  `price_group_id` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `proveedor_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'INDEFINIDO',
+  `regular_price` decimal(10,2) DEFAULT NULL COMMENT 'Precio de costo',
+  `regular_dolar` decimal(10,2) DEFAULT NULL,
+  `price_manual` int DEFAULT NULL,
+  `stock` int DEFAULT NULL,
+  `porcen_regular_price` decimal(10,2) DEFAULT NULL COMMENT 'Porcentage para precio',
+  `pro_nota` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Nota del Producto',
+  `pro_oferta` tinyint DEFAULT '0' COMMENT '0 sin oferta. 1 en oferta',
+  `pro_favorito` tinyint DEFAULT '0' COMMENT '1 es favorito 0, no es favorito',
+  `pro_cant_ventas` int DEFAULT NULL COMMENT 'Cantidad de ventas',
+  `pro_local` tinyint DEFAULT '0' COMMENT '1 cuando el producto existe o existio en el local. de lo contrario es 0',
+  `pro_create_auto` tinyint NOT NULL DEFAULT '0' COMMENT '1 es auto 0 es manual',
+  `moneda` tinyint NOT NULL DEFAULT '1',
+  `cat_1` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `cat_2` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `cat_3` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `cat_4` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_general_ci,
+  `marca` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `marca_id` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `slug` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `json_extra` json DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `public_handle` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Identificador publico para construir la URL del producto en la web',
+  `public_enabled` tinyint NOT NULL DEFAULT '0' COMMENT '0 no publicar, 1 publicar en la web',
+  `primary_media_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Imagen principal para listados y vistas rapidas'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+Mas datos:
+ALTER TABLE `productos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uniq_increm` (`increm`),
+  ADD UNIQUE KEY `uniq_proveedor_sku` (`proveedor_id`,`sku`),
+  ADD UNIQUE KEY `uniq_productos_public_handle` (`public_handle`),
+  ADD KEY `idx_sku` (`sku`),
+  ADD KEY `idx_proveedor` (`proveedor_id`),
+  ADD KEY `idx_favorito` (`pro_favorito`),
+  ADD KEY `idx_cant_ventas` (`pro_cant_ventas`),
+  ADD KEY `idx_interno` (`pro_local`),
+  ADD KEY `idx_create_auto` (`pro_create_auto`),
+  ADD KEY `idx_moneda` (`moneda`),
+  ADD KEY `idx_proveedor_name` (`proveedor_name`),
+  ADD KEY `idx_marca` (`marca`),
+  ADD KEY `idx_cat1` (`cat_1`),
+  ADD KEY `idx_cat2` (`cat_2`),
+  ADD KEY `idx_cat3` (`cat_3`),
+  ADD KEY `idx_cat4` (`cat_4`),
+  ADD KEY `idx_productos_public_enabled` (`public_enabled`),
+  ADD KEY `idx_primary_media_id` (`primary_media_id`);
+ALTER TABLE `productos` ADD FULLTEXT KEY `ft_name_name2` (`name`,`name2`);
+ALTER TABLE `productos`
+  MODIFY `increm` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18924;
+ALTER TABLE `productos`
+  ADD CONSTRAINT `fk_producto_proveedor` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_productos_primary_media` FOREIGN KEY (`primary_media_id`) REFERENCES `media` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_productos_proveedor` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+INSERT INTO `productos` (`increm`, `id`, `id_producto`, `sku`, `gtin13`, `name`, `name2`, `proveedor_id`, `price_group_id`, `proveedor_name`, `regular_price`, `regular_dolar`, `price_manual`, `stock`, `porcen_regular_price`, `pro_nota`, `pro_oferta`, `pro_favorito`, `pro_cant_ventas`, `pro_local`, `pro_create_auto`, `moneda`, `cat_1`, `cat_2`, `cat_3`, `cat_4`, `description`, `marca`, `marca_id`, `slug`, `json_extra`, `created_at`, `updated_at`, `public_handle`, `public_enabled`, `primary_media_id`) VALUES
+(11505, '5dc0b2fd-6410-11f1-afe8-fa163edb0855', NULL, '150300', NULL, 'ACEITE BORO DESENGRASANTE P/ARM.NARANJA', NULL, '412222e6-603e-11f1-afe8-fa163edb0855', '6d23372c-7b46-11f1-8ac9-fa163edb0855', 'BARALDO', 18080.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 1, 1, 'ARMERIA', 'ACCESORIOS ARMERIA', 'ACEITES Y LUBRICANTES', NULL, NULL, 'BORO', NULL, NULL, NULL, '2026-06-09 11:34:48', '2026-07-09 02:35:54', NULL, 0, NULL),
+(18476, '1124d263-6df9-11f1-afe8-fa163edb0855', NULL, '101-CTG-1182ML-BC', NULL, 'TERMO CONTIGO THERMAL BOTTLE 1182ML - BLUE CORN', NULL, 'fe2762bf-6adf-11f1-afe8-fa163edb0855', 'a4373ff7-7b4d-11f1-8ac9-fa163edb0855', 'WESCAMP', 50673.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 0, 1, 'CONTIGO', 'TERMOS', 'TERMOS 1182ML', NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-22 02:13:12', '2026-07-10 03:32:07', NULL, 0, NULL),
+(11506, '5dc0b863-6410-11f1-afe8-fa163edb0855', NULL, '150301', NULL, 'ACEITE BORO DESENCOBRANTE P/ARMAS AZUL', NULL, '412222e6-603e-11f1-afe8-fa163edb0855', '3d34987e-7b46-11f1-8ac9-fa163edb0855', 'BARALDO', 18080.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 1, 1, 'ARMERIA', 'ACCESORIOS ARMERIA', 'ACEITES Y LUBRICANTES', NULL, NULL, 'BORO', NULL, NULL, NULL, '2026-06-09 11:34:48', '2026-07-09 01:58:55', NULL, 0, NULL),
+
+
+
+TABLA: provider
+
+CREATE TABLE `provider` (
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'UUID del proveedor',
+  `slug` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'identificador legible del proveedor',
+  `nombre` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'nombre del proveedor',
+  `notas` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `delete_block` tinyint NOT NULL DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+Mas datos:
+ALTER TABLE `provider`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `slug` (`slug`);
+
+INSERT INTO `provider` (`id`, `slug`, `nombre`, `notas`, `delete_block`, `created_at`, `updated_at`) VALUES
+('36112571-690a-11f1-afe8-fa163edb0855', 'sin-proveedor', 'SIN PROVEEDOR', NULL, 1, '2026-06-15 22:33:20', '2026-06-26 00:01:57'),
+('3758f6fe-28e0-11f1-8125-fa163edb0855', 'fishing', 'FISHING', NULL, 1, '2026-06-10 05:03:24', '2026-06-13 03:42:46'),
+('390d2b6c-70f3-11f1-afe8-fa163edb0855', 'el-flaco-srl-prueba', 'z PROVEEDOR DE PRUEBA', NULL, 0, '2026-06-26 00:08:56', '2026-07-01 04:43:48'),
+('3f675169-25a1-11f1-8125-fa163edb0855', 'suri', 'SURI', NULL, 1, '2026-06-10 05:03:24', '2026-06-13 03:42:48'),
+('412222e6-603e-11f1-afe8-fa163edb0855', 'baraldo', 'BARALDO', NULL, 1, '2026-06-10 05:03:24', '2026-07-06 16:16:13'),
+('5f2420dc-6bda-11f1-afe8-fa163edb0855', 'swat-point', 'SWAT POINT', NULL, 0, '2026-06-19 12:28:26', '2026-06-26 22:34:48'),
+('b160215f-740a-11f1-8ac9-fa163edb0855', 'apolo', 'APOLO', NULL, 0, '2026-06-29 22:34:29', '2026-06-29 22:36:44'),
+('b43f4d0f-7180-11f1-afe8-fa163edb0855', 'libertad-fromtiffe', 'LIBERTAD-FROMTIFFE', NULL, 0, '2026-06-26 17:01:41', '2026-06-30 02:57:01'),
+('df507329-6b54-11f1-afe8-fa163edb0855', 'guardatti', 'GUARDATTI', NULL, 1, '2026-06-18 20:32:49', '2026-06-30 02:56:12'),
+('e0f09e4c-66d9-11f1-afe8-fa163edb0855', 'de-prueba', 'DE PRUEBA', NULL, 1, '2026-06-13 03:42:19', '2026-06-30 02:56:08'),
+('fe2762bf-6adf-11f1-afe8-fa163edb0855', 'wescamp', 'WESCAMP', NULL, 1, '2026-06-18 06:36:09', '2026-06-18 07:14:15');

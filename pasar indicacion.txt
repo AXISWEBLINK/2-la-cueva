@@ -1,0 +1,23 @@
+Antes de generar código, leer los archivos dbprecios.txt y PriceEngine_Specification_v1.md.
+Toda implementación debe respetar esas reglas
+el motor de precios se encuentra dentro de la carpeta llamana_price:engine
+
+Necesito que lo revises para hacer correcciones, al motor de precios, ya que hay algunos errores de comandos y no se encuentra terminado.
+consultame lo que necesites o haceme las consultas que necesites.
+
+Esto luego lo voy a poner en otro sistema ya creado, esta parte solo es el motor de precios.
+
+seguir completando test_price_engine:
+asi agrego manualmente online el id del producto y el precio de lista u otro asi pruebo el motor.
+
+en este momento no tenes coneccion a mi base de datos directamente.
+este sistema que ves lo tengo conectado por ftp a mi hostin y realizo directamente las pruebas online
+en: 
+https://cuev.tiendaenred.com/price_engine/test_price_engine.php
+
+
+
+para que sepas como esta la base de datos podes ver en: dbprecios.txt
+si necesitas hacer una correccion o alguna modificacion de mis tablas para agregar funcionamientos:
+crea: sq_db_correccion.txt con los comandos sql asi los aplico manualmentye.
+

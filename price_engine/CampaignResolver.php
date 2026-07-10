@@ -36,7 +36,13 @@ class CampaignResolver
                     break;
             }
 
-            $result->campaigns[] = $campaign;
+            $result->campaigns[] = [
+                'id' => $campaign['id'],
+                'code' => $campaign['code'],
+                'name' => $campaign['name'],
+                'type' => $campaign['discount_type'],
+                'value' => $campaign['discount_value']
+            ];
 
             $result->finalPrice = round($price, 2);
 

@@ -1,3 +1,0 @@
-Antes de generar código, leé completamente dbprecios.txt, PriceEngine.md y CodingRules.md. 
-Toda implementación debe respetar esas reglas
- y no puede modificar la arquitectura del motor de precios sin autorización explícita.
