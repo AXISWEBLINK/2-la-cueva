@@ -1,0 +1,6 @@
+price_provider_groups
+price_calculation_rules
+price_product_overrides
+price_campaigns
+price_campaign_targets
+price_lists_name

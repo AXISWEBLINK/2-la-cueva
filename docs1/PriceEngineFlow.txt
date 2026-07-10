@@ -1,0 +1,37 @@
+Producto
+
+↓
+
+Regla
+
+↓
+
+Costo Comercial
+
+↓
+
+Margen
+
+↓
+
+Ajuste
+
+↓
+
+IVA
+
+↓
+
+Override
+
+↓
+
+Campañas
+
+↓
+
+Redondeo
+
+↓
+
+Precio Final
