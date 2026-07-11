@@ -21,12 +21,11 @@ class PriceEngine
             $priceListId
         );
 
-        $campaigns = $this->repository->getCampaigns(
-            $productId,
-            $context['proveedor_id'] ?? '',
-            $context['price_group_id'] ?? '',
-            $priceListId
-        );
+        if ($context === []) {
+            throw new RuntimeException('No se pudo resolver el contexto de precio para el producto y la lista indicados.');
+        }
+
+        $campaigns = $this->repository->getCampaigns($context, $priceListId);
 
         $result = new PriceResult();
 
