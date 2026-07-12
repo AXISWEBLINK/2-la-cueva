@@ -1,10 +1,5 @@
--- Opcional: mejora de rendimiento para lookup de categorias por producto
-ALTER TABLE categorias_productos
-  ADD KEY idx_producto_active (producto_id, is_active, categoria_id);
 
--- Opcional: mejora de rendimiento para filtros de targets por lista, estado y destino
-ALTER TABLE price_campaign_targets
-  ADD KEY idx_lookup_active_list_target (is_active, price_list_id, target_type, target_uuid, match_mode);
+-- esto no lo implemente  todavia:
 
 -- Opcional: normalizar grupos por defecto cuando el proveedor tiene un solo grupo activo.
 UPDATE price_provider_groups pg
