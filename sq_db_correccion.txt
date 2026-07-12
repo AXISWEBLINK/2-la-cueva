@@ -5,3 +5,16 @@ ALTER TABLE categorias_productos
 -- Opcional: mejora de rendimiento para filtros de targets por lista, estado y destino
 ALTER TABLE price_campaign_targets
   ADD KEY idx_lookup_active_list_target (is_active, price_list_id, target_type, target_uuid, match_mode);
+
+-- Opcional: normalizar grupos por defecto cuando el proveedor tiene un solo grupo activo.
+UPDATE price_provider_groups pg
+INNER JOIN (
+  SELECT proveedor_id, MIN(id) AS group_id
+  FROM price_provider_groups
+  WHERE is_active = 1
+  GROUP BY proveedor_id
+  HAVING COUNT(*) = 1
+) single_group
+  ON single_group.group_id = pg.id
+SET pg.is_default = 1
+WHERE pg.is_default = 0;

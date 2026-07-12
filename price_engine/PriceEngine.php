@@ -34,6 +34,16 @@ class PriceEngine
         $result->trace = new PriceTrace();
         $result->context = $context;
 
+        $result->trace->add('Producto', $context['name'] ?? $productId);
+        $result->trace->add('Proveedor', $context['provider_name'] ?? ($context['proveedor_id'] ?? ''));
+        $result->trace->add('Grupo de precio', [
+            'id' => $context['price_group_id'] ?? null,
+            'code' => $context['group_code'] ?? null,
+            'name' => $context['group_name'] ?? null,
+            'source' => $context['price_group_source'] ?? null,
+        ]);
+        $result->trace->add('Regla', $context['rule_id'] ?? null);
+
         $result = (new RuleResolver())->resolve($context, $result);
 
         $result = (new OverrideResolver())->resolve($context, $result);

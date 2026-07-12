@@ -24,9 +24,15 @@ class PriceRepository
             p.marca_id,
             p.marca AS brand_name,
             pr.nombre AS provider_name,
-            COALESCE(pg_product.id, pg_default.id) AS price_group_id,
-            COALESCE(pg_product.group_code, pg_default.group_code) AS group_code,
-            COALESCE(pg_product.nombre, pg_default.nombre) AS group_name,
+            COALESCE(pg_product.id, pg_default.id, pg_fallback.id) AS price_group_id,
+            COALESCE(pg_product.group_code, pg_default.group_code, pg_fallback.group_code) AS group_code,
+            COALESCE(pg_product.nombre, pg_default.nombre, pg_fallback.nombre) AS group_name,
+            CASE
+                WHEN pg_product.id IS NOT NULL THEN 'product'
+                WHEN pg_default.id IS NOT NULL THEN 'default'
+                WHEN pg_fallback.id IS NOT NULL THEN 'provider_fallback'
+                ELSE 'missing'
+            END AS price_group_source,
             pl.id AS price_list_id,
             pl.code AS price_list_code,
             pl.name AS price_list_name,
@@ -57,11 +63,20 @@ class PriceRepository
             ON pg_default.proveedor_id = p.proveedor_id
            AND pg_default.is_default = 1
            AND pg_default.is_active = 1
+        LEFT JOIN price_provider_groups pg_fallback
+            ON pg_fallback.id = (
+                SELECT pg_lookup.id
+                FROM price_provider_groups pg_lookup
+                WHERE pg_lookup.proveedor_id = p.proveedor_id
+                  AND pg_lookup.is_active = 1
+                ORDER BY pg_lookup.is_default DESC, pg_lookup.orden ASC, pg_lookup.created_at ASC, pg_lookup.id ASC
+                LIMIT 1
+            )
         INNER JOIN price_lists_name pl
             ON pl.id = :price_list_id
            AND pl.is_active = 1
         INNER JOIN price_calculation_rules r
-            ON r.price_group_id = COALESCE(pg_product.id, pg_default.id)
+            ON r.price_group_id = COALESCE(pg_product.id, pg_default.id, pg_fallback.id)
            AND r.price_list_id = pl.id
            AND r.is_active = 1
         LEFT JOIN price_product_overrides o
