@@ -1,6 +1,7 @@
 SQL Resumido para enviar
 
 
+
 TABLA: categorias
 
 CREATE TABLE `categorias` (
@@ -22,19 +23,27 @@ ALTER TABLE `categorias`
   ADD CONSTRAINT `fk_categorias_parent` FOREIGN KEY (`parent_id`) REFERENCES `categorias` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 INSERT INTO `categorias` (`id`, `nombre`, `parent_id`, `delete_block`, `created_at`, `updated_at`, `is_active`) VALUES
-('14b3f64f-740a-11f1-8ac9-fa163edb0855', 'Vasos', '954e880a-7409-11f1-8ac9-fa163edb0855', 0, '2026-06-29 22:30:07', '2026-06-29 22:30:07', 1),
-('45f55be9-28e6-11f1-8125-fa163edb0855', 'Pesca', NULL, 1, '2026-06-10 02:40:58', '2026-06-12 20:33:24', 1),
-('51271a4e-28e6-11f1-8125-fa163edb0855', 'Reeles', '45f55be9-28e6-11f1-8125-fa163edb0855', 0, '2026-06-10 02:40:58', '2026-06-10 02:40:58', 1),
-('549a404b-70e2-11f1-afe8-fa163edb0855', 'Linternas', '86533055-2a36-11f1-8125-fa163edb0855', 0, '2026-06-25 22:08:00', '2026-06-25 22:08:00', 1),
-('6932533e-28e6-11f1-8125-fa163edb0855', 'Frontales', '51271a4e-28e6-11f1-8125-fa163edb0855', 0, '2026-06-10 02:40:58', '2026-06-10 02:40:58', 1),
-('6db228ff-28e6-11f1-8125-fa163edb0855', 'Rotativos', '51271a4e-28e6-11f1-8125-fa163edb0855', 0, '2026-06-10 02:40:58', '2026-06-10 02:40:58', 1),
-('86533055-2a36-11f1-8125-fa163edb0855', 'Caza', NULL, 1, '2026-06-10 02:40:58', '2026-06-12 20:33:26', 1),
-('954e880a-7409-11f1-8ac9-fa163edb0855', 'Camping', NULL, 0, '2026-06-29 22:26:33', '2026-06-29 22:26:33', 1),
-('a1dc948e-71b3-11f1-afe8-fa163edb0855', 'Indumentaria', NULL, 0, '2026-06-26 23:06:15', '2026-06-26 23:06:15', 1),
-('b34bfd22-71b3-11f1-afe8-fa163edb0855', 'Gorras', 'a1dc948e-71b3-11f1-afe8-fa163edb0855', 0, '2026-06-26 23:06:44', '2026-06-26 23:06:44', 1),
-('b38e75c2-73e3-11f1-8ac9-fa163edb0855', 'Z Categoria de pruebas', NULL, 0, '2026-06-29 17:55:23', '2026-06-29 17:55:23', 1),
-('df81c5f8-6474-11f1-afe8-fa163edb0855', 'SIN CATEGORIA', NULL, 1, '2026-06-10 02:40:58', '2026-06-12 20:33:01', 1);
-
+('14b3f64f-740a-11f1-8ac9-fa163edb0855', 'Vasos', '954e880a-7409-11f1-8ac9-fa163edb0855', 0, '2026-06-30 01:30:07', '2026-06-30 01:30:07', 1),
+('45f55be9-28e6-11f1-8125-fa163edb0855', 'Pesca', NULL, 1, '2026-06-10 05:40:58', '2026-06-12 23:33:24', 1),
+('501210a5-7e4a-11f1-8ac9-fa163edb0855', 'Accesorios', '954e880a-7409-11f1-8ac9-fa163edb0855', 0, '2026-07-12 23:35:06', '2026-07-12 23:35:06', 1),
+('51271a4e-28e6-11f1-8125-fa163edb0855', 'Reeles', '45f55be9-28e6-11f1-8125-fa163edb0855', 0, '2026-06-10 05:40:58', '2026-06-10 05:40:58', 1),
+('549a404b-70e2-11f1-afe8-fa163edb0855', 'Linternas', '86533055-2a36-11f1-8125-fa163edb0855', 0, '2026-06-26 01:08:00', '2026-06-26 01:08:00', 1),
+('5c767e38-758b-11f1-8ac9-fa163edb0855', 'Machetes', '954e880a-7409-11f1-8ac9-fa163edb0855', 0, '2026-07-01 23:28:03', '2026-07-01 23:28:03', 1),
+('6932533e-28e6-11f1-8125-fa163edb0855', 'Frontales', '51271a4e-28e6-11f1-8125-fa163edb0855', 0, '2026-06-10 05:40:58', '2026-06-10 05:40:58', 1),
+('6ba0b0f7-7588-11f1-8ac9-fa163edb0855', 'Cortaplumas', '954e880a-7409-11f1-8ac9-fa163edb0855', 0, '2026-07-01 23:07:00', '2026-07-01 23:07:00', 1),
+('6db228ff-28e6-11f1-8125-fa163edb0855', 'Rotativos', '51271a4e-28e6-11f1-8125-fa163edb0855', 0, '2026-06-10 05:40:58', '2026-06-10 05:40:58', 1),
+('73855858-7616-11f1-8ac9-fa163edb0855', 'Armeria', NULL, 0, '2026-07-02 16:03:42', '2026-07-02 16:03:42', 1),
+('7e20e528-7616-11f1-8ac9-fa163edb0855', 'Infladores', '73855858-7616-11f1-8ac9-fa163edb0855', 0, '2026-07-02 16:04:00', '2026-07-02 16:04:00', 1),
+('85f90ed9-7e4a-11f1-8ac9-fa163edb0855', 'Artefactos a gas', '954e880a-7409-11f1-8ac9-fa163edb0855', 0, '2026-07-12 23:36:36', '2026-07-12 23:36:36', 1),
+('86533055-2a36-11f1-8125-fa163edb0855', 'Caza', NULL, 1, '2026-06-10 05:40:58', '2026-06-12 23:33:26', 1),
+('8ba9f529-7617-11f1-8ac9-fa163edb0855', 'Mochilas', '954e880a-7409-11f1-8ac9-fa163edb0855', 0, '2026-07-02 16:11:32', '2026-07-02 16:11:32', 1),
+('954e880a-7409-11f1-8ac9-fa163edb0855', 'Camping', NULL, 0, '2026-06-30 01:26:33', '2026-06-30 01:26:33', 1),
+('a1dc948e-71b3-11f1-afe8-fa163edb0855', 'Indumentaria', NULL, 0, '2026-06-27 02:06:15', '2026-06-27 02:06:15', 1),
+('b34bfd22-71b3-11f1-afe8-fa163edb0855', 'Gorras', 'a1dc948e-71b3-11f1-afe8-fa163edb0855', 0, '2026-06-27 02:06:44', '2026-06-27 02:06:44', 1),
+('dd32cd86-7618-11f1-8ac9-fa163edb0855', 'Municiones', '73855858-7616-11f1-8ac9-fa163edb0855', 0, '2026-07-02 16:20:58', '2026-07-02 16:20:58', 1),
+('df81c5f8-6474-11f1-afe8-fa163edb0855', 'SIN CATEGORIA', NULL, 1, '2026-06-10 05:40:58', '2026-06-12 23:33:01', 1),
+('f84f571d-7617-11f1-8ac9-fa163edb0855', 'Pistolas', '73855858-7616-11f1-8ac9-fa163edb0855', 0, '2026-07-02 16:14:34', '2026-07-02 16:14:34', 1),
+('f9a3eb9c-7616-11f1-8ac9-fa163edb0855', 'Accesorios', '73855858-7616-11f1-8ac9-fa163edb0855', 0, '2026-07-02 16:07:27', '2026-07-02 16:07:27', 1);
 
 
 TABLA: categorias_productos
@@ -119,7 +128,6 @@ INSERT INTO `price_calculation_rules` (`id`, `price_group_id`, `price_list_id`, 
 ('0727959a-7cf3-11f1-8ac9-fa163edb0855', 'd0152204-7cf2-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-11 06:37:46', '2026-07-11 06:37:46'),
 
 
-
 TABLA: price_campaign_targets
 
 CREATE TABLE `price_campaign_targets` (
@@ -143,7 +151,8 @@ ALTER TABLE `price_campaign_targets`
   ADD KEY `idx_campaign` (`campaign_id`,`is_active`),
   ADD KEY `idx_target` (`target_type`,`target_uuid`),
   ADD KEY `idx_price_list` (`price_list_id`),
-  ADD KEY `idx_apply` (`apply_order`,`priority`);
+  ADD KEY `idx_apply` (`apply_order`,`priority`),
+  ADD KEY `idx_lookup_active_list_target` (`is_active`,`price_list_id`,`target_type`,`target_uuid`,`match_mode`);
 ALTER TABLE `price_campaign_targets`
   ADD CONSTRAINT `fk_pct_campaign` FOREIGN KEY (`campaign_id`) REFERENCES `price_campaigns` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_pct_price_list` FOREIGN KEY (`price_list_id`) REFERENCES `price_lists_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -312,6 +321,9 @@ INSERT INTO `price_provider_groups` (`id`, `proveedor_id`, `group_code`, `nombre
 ('d0152204-7cf2-11f1-8ac9-fa163edb0855', '3758f6fe-28e0-11f1-8125-fa163edb0855', 'GENERAL', 'GENERAL FISHING', 'GENERAL FISHING', 100, 0, 1, '2026-07-11 06:36:14', '2026-07-11 06:36:14');
 
 
+
+
+
 TABLA: productos
 
 CREATE TABLE `productos` (
@@ -326,6 +338,9 @@ CREATE TABLE `productos` (
   `price_group_id` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `proveedor_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'INDEFINIDO',
   `regular_price` decimal(10,2) DEFAULT NULL COMMENT 'Precio de costo',
+  `cost_type` enum('net','gross') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'gross' COMMENT 'Indica si regular_price es neto o incluye IVA',
+  `purchase_vat_percent` decimal(5,2) NOT NULL DEFAULT '21.00' COMMENT 'IVA de compra del producto',
+  `sale_vat_percent` decimal(5,2) NOT NULL DEFAULT '21.00' COMMENT 'IVA de venta del producto',
   `regular_dolar` decimal(10,2) DEFAULT NULL,
   `price_manual` int DEFAULT NULL,
   `stock` int DEFAULT NULL,
@@ -382,15 +397,14 @@ ALTER TABLE `productos`
   ADD CONSTRAINT `fk_productos_primary_media` FOREIGN KEY (`primary_media_id`) REFERENCES `media` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_productos_proveedor` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-INSERT INTO `productos` (`increm`, `id`, `id_producto`, `sku`, `gtin13`, `name`, `name2`, `proveedor_id`, `price_group_id`, `proveedor_name`, `regular_price`, `regular_dolar`, `price_manual`, `stock`, `porcen_regular_price`, `pro_nota`, `pro_oferta`, `pro_favorito`, `pro_cant_ventas`, `pro_local`, `pro_create_auto`, `moneda`, `cat_1`, `cat_2`, `cat_3`, `cat_4`, `description`, `marca`, `marca_id`, `slug`, `json_extra`, `created_at`, `updated_at`, `public_handle`, `public_enabled`, `primary_media_id`) VALUES
-(11505, '5dc0b2fd-6410-11f1-afe8-fa163edb0855', NULL, '150300', NULL, 'ACEITE BORO DESENGRASANTE P/ARM.NARANJA', NULL, '412222e6-603e-11f1-afe8-fa163edb0855', '6d23372c-7b46-11f1-8ac9-fa163edb0855', 'BARALDO', 18080.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 1, 1, 'ARMERIA', 'ACCESORIOS ARMERIA', 'ACEITES Y LUBRICANTES', NULL, NULL, 'BORO', NULL, NULL, NULL, '2026-06-09 11:34:48', '2026-07-09 02:35:54', NULL, 0, NULL),
-(18476, '1124d263-6df9-11f1-afe8-fa163edb0855', NULL, '101-CTG-1182ML-BC', NULL, 'TERMO CONTIGO THERMAL BOTTLE 1182ML - BLUE CORN', NULL, 'fe2762bf-6adf-11f1-afe8-fa163edb0855', 'a4373ff7-7b4d-11f1-8ac9-fa163edb0855', 'WESCAMP', 50673.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 0, 1, 'CONTIGO', 'TERMOS', 'TERMOS 1182ML', NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-22 02:13:12', '2026-07-10 03:32:07', NULL, 0, NULL),
-(11506, '5dc0b863-6410-11f1-afe8-fa163edb0855', NULL, '150301', NULL, 'ACEITE BORO DESENCOBRANTE P/ARMAS AZUL', NULL, '412222e6-603e-11f1-afe8-fa163edb0855', '3d34987e-7b46-11f1-8ac9-fa163edb0855', 'BARALDO', 18080.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 1, 1, 'ARMERIA', 'ACCESORIOS ARMERIA', 'ACEITES Y LUBRICANTES', NULL, NULL, 'BORO', NULL, NULL, NULL, '2026-06-09 11:34:48', '2026-07-09 01:58:55', NULL, 0, NULL),
-(18919, 'd56ab0d2-7191-11f1-afe8-fa163edb0855', NULL, 'SWAT448243', NULL, 'Linterna reforzada 2000x (PRUEBA)', NULL, '390d2b6c-70f3-11f1-afe8-fa163edb0855', NULL, 'z PROVEEDOR DE PRUEBA', 10000.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-26 16:04:18', '2026-07-04 16:22:28', NULL, 0, '49640532-750f-11f1-8ac9-fa163edb0855');
-(6479, '914a7681-63ba-11f1-afe8-fa163edb0855', NULL, '3647', NULL, 'Tapón mediano c/ luz - Unidad', NULL, '3758f6fe-28e0-11f1-8125-fa163edb0855', NULL, 'FISHING', 6885.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 1, 1, 'varios', 'TAPÓN PARA MATE', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-09 01:20:37', '2026-07-04 14:18:26', NULL, 0, NULL),
 
 
-
+INSERT INTO `productos` (`increm`, `id`, `id_producto`, `sku`, `gtin13`, `name`, `name2`, `proveedor_id`, `price_group_id`, `proveedor_name`, `regular_price`, `cost_type`, `purchase_vat_percent`, `sale_vat_percent`, `regular_dolar`, `price_manual`, `stock`, `porcen_regular_price`, `pro_nota`, `pro_oferta`, `pro_favorito`, `pro_cant_ventas`, `pro_local`, `pro_create_auto`, `moneda`, `cat_1`, `cat_2`, `cat_3`, `cat_4`, `description`, `marca`, `marca_id`, `slug`, `json_extra`, `created_at`, `updated_at`, `public_handle`, `public_enabled`, `primary_media_id`) VALUES
+(11505, '5dc0b2fd-6410-11f1-afe8-fa163edb0855', NULL, '150300', NULL, 'ACEITE BORO DESENGRASANTE P/ARM.NARANJA', NULL, '412222e6-603e-11f1-afe8-fa163edb0855', '6d23372c-7b46-11f1-8ac9-fa163edb0855', 'BARALDO', 18080.00, 'gross', 21.00, 21.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 1, 1, 'ARMERIA', 'ACCESORIOS ARMERIA', 'ACEITES Y LUBRICANTES', NULL, NULL, 'BORO', NULL, NULL, NULL, '2026-06-09 11:34:48', '2026-07-09 02:35:54', NULL, 0, NULL),
+(18476, '1124d263-6df9-11f1-afe8-fa163edb0855', NULL, '101-CTG-1182ML-BC', NULL, 'TERMO CONTIGO THERMAL BOTTLE 1182ML - BLUE CORN', NULL, 'fe2762bf-6adf-11f1-afe8-fa163edb0855', 'a4373ff7-7b4d-11f1-8ac9-fa163edb0855', 'WESCAMP', 50673.00, 'gross', 21.00, 21.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 0, 1, 'CONTIGO', 'TERMOS', 'TERMOS 1182ML', NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-22 02:13:12', '2026-07-10 03:32:07', NULL, 0, NULL),
+(11506, '5dc0b863-6410-11f1-afe8-fa163edb0855', NULL, '150301', NULL, 'ACEITE BORO DESENCOBRANTE P/ARMAS AZUL', NULL, '412222e6-603e-11f1-afe8-fa163edb0855', NULL, 'BARALDO', 18080.00, 'gross', 21.00, 21.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 1, 1, 'ARMERIA', 'ACCESORIOS ARMERIA', 'ACEITES Y LUBRICANTES', NULL, NULL, 'BORO', NULL, NULL, NULL, '2026-06-09 11:34:48', '2026-07-11 03:27:10', NULL, 0, NULL),
+(18919, 'd56ab0d2-7191-11f1-afe8-fa163edb0855', NULL, 'SWAT448243', NULL, 'Linterna reforzada 2000x (PRUEBA)', NULL, '390d2b6c-70f3-11f1-afe8-fa163edb0855', NULL, 'z PROVEEDOR DE PRUEBA', 10000.00, 'gross', 21.00, 21.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-26 16:04:18', '2026-07-04 16:22:28', NULL, 0, '49640532-750f-11f1-8ac9-fa163edb0855');
+(6479, '914a7681-63ba-11f1-afe8-fa163edb0855', NULL, '3647', NULL, 'Tapón mediano c/ luz - Unidad', NULL, '3758f6fe-28e0-11f1-8125-fa163edb0855', NULL, 'FISHING', 6885.00, 'gross', 21.00, 21.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 1, 1, 'varios', 'TAPÓN PARA MATE', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-09 01:20:37', '2026-07-04 14:18:26', NULL, 0, NULL),
 
 
 
@@ -413,14 +427,15 @@ ALTER TABLE `provider`
   ADD UNIQUE KEY `slug` (`slug`);
 
 INSERT INTO `provider` (`id`, `slug`, `nombre`, `notas`, `delete_block`, `created_at`, `updated_at`) VALUES
-('36112571-690a-11f1-afe8-fa163edb0855', 'sin-proveedor', 'SIN PROVEEDOR', NULL, 1, '2026-06-15 22:33:20', '2026-06-26 00:01:57'),
-('3758f6fe-28e0-11f1-8125-fa163edb0855', 'fishing', 'FISHING', NULL, 1, '2026-06-10 05:03:24', '2026-06-13 03:42:46'),
-('390d2b6c-70f3-11f1-afe8-fa163edb0855', 'el-flaco-srl-prueba', 'z PROVEEDOR DE PRUEBA', NULL, 0, '2026-06-26 00:08:56', '2026-07-01 04:43:48'),
-('3f675169-25a1-11f1-8125-fa163edb0855', 'suri', 'SURI', NULL, 1, '2026-06-10 05:03:24', '2026-06-13 03:42:48'),
-('412222e6-603e-11f1-afe8-fa163edb0855', 'baraldo', 'BARALDO', NULL, 1, '2026-06-10 05:03:24', '2026-07-06 16:16:13'),
-('5f2420dc-6bda-11f1-afe8-fa163edb0855', 'swat-point', 'SWAT POINT', NULL, 0, '2026-06-19 12:28:26', '2026-06-26 22:34:48'),
-('b160215f-740a-11f1-8ac9-fa163edb0855', 'apolo', 'APOLO', NULL, 0, '2026-06-29 22:34:29', '2026-06-29 22:36:44'),
-('b43f4d0f-7180-11f1-afe8-fa163edb0855', 'libertad-fromtiffe', 'LIBERTAD-FROMTIFFE', NULL, 0, '2026-06-26 17:01:41', '2026-06-30 02:57:01'),
-('df507329-6b54-11f1-afe8-fa163edb0855', 'guardatti', 'GUARDATTI', NULL, 1, '2026-06-18 20:32:49', '2026-06-30 02:56:12'),
-('e0f09e4c-66d9-11f1-afe8-fa163edb0855', 'de-prueba', 'DE PRUEBA', NULL, 1, '2026-06-13 03:42:19', '2026-06-30 02:56:08'),
-('fe2762bf-6adf-11f1-afe8-fa163edb0855', 'wescamp', 'WESCAMP', NULL, 1, '2026-06-18 06:36:09', '2026-06-18 07:14:15');
+('36112571-690a-11f1-afe8-fa163edb0855', 'sin-proveedor', 'SIN PROVEEDOR', NULL, 1, '2026-06-15 22:33:20', '2026-07-12 23:29:50'),
+('3758f6fe-28e0-11f1-8125-fa163edb0855', 'fishing', 'FISHING', NULL, 1, '2026-06-10 05:03:24', '2026-07-12 23:29:50'),
+('390d2b6c-70f3-11f1-afe8-fa163edb0855', 'el-flaco-srl-prueba', 'z PROVEEDOR DE PRUEBA', NULL, 0, '2026-06-26 00:08:56', '2026-07-12 23:29:50'),
+('3f675169-25a1-11f1-8125-fa163edb0855', 'suri', 'SURI', NULL, 1, '2026-06-10 05:03:24', '2026-07-12 23:29:50'),
+('412222e6-603e-11f1-afe8-fa163edb0855', 'baraldo', 'BARALDO', NULL, 1, '2026-06-10 05:03:24', '2026-07-12 23:29:50'),
+('5f2420dc-6bda-11f1-afe8-fa163edb0855', 'swat-point', 'SWAT POINT', NULL, 0, '2026-06-19 12:28:26', '2026-07-12 23:29:50'),
+('90088a49-7555-11f1-8ac9-fa163edb0855', 'gonzalo-galan', 'GONZALO GALAN', NULL, 0, '2026-07-12 23:29:50', '2026-07-12 23:29:50'),
+('b160215f-740a-11f1-8ac9-fa163edb0855', 'apolo', 'APOLO', NULL, 0, '2026-06-29 22:34:29', '2026-07-12 23:29:50'),
+('b43f4d0f-7180-11f1-afe8-fa163edb0855', 'libertad-fromtiffe', 'LIBERTAD-FROMTIFFE', NULL, 0, '2026-06-26 17:01:41', '2026-07-12 23:29:50'),
+('df507329-6b54-11f1-afe8-fa163edb0855', 'guardatti', 'GUARDATTI', NULL, 1, '2026-06-18 20:32:49', '2026-07-12 23:29:50'),
+('e0f09e4c-66d9-11f1-afe8-fa163edb0855', 'de-prueba', 'DE PRUEBA', NULL, 1, '2026-06-13 03:42:19', '2026-07-12 23:29:50'),
+('fe2762bf-6adf-11f1-afe8-fa163edb0855', 'wescamp', 'WESCAMP', NULL, 1, '2026-06-18 06:36:09', '2026-07-12 23:29:50');

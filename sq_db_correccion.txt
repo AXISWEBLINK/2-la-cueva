@@ -1,7 +1,184 @@
+-- Correccion de esquema para aplicar manualmente en phpMyAdmin.
+-- Objetivo:
+-- 1) Unificar las FK de productos contra la tabla provider.
+-- 2) Consolidar el nuevo modelo de costos en productos.
+-- 3) Agregar FK faltantes e indices utiles para la siguiente etapa del motor.
+-- 4) Agregar UNIQUE en marcas.slug si no existen conflictos.
+-- 5) Mantener price_calculation_rules.vat_percent solo como compatibilidad temporal.
 
--- esto no lo implemente  todavia:
+SET @schema_name := DATABASE();
 
--- Opcional: normalizar grupos por defecto cuando el proveedor tiene un solo grupo activo.
+-- =========================================================
+-- 1. AUDITORIAS PREVIAS
+-- =========================================================
+
+-- Restricciones que todavia referencian la tabla vieja `proveedores`.
+SELECT
+  kcu.table_name,
+  kcu.column_name,
+  kcu.constraint_name,
+  kcu.referenced_table_name,
+  kcu.referenced_column_name
+FROM information_schema.key_column_usage kcu
+WHERE kcu.table_schema = @schema_name
+  AND kcu.referenced_table_name = 'proveedores';
+
+-- Productos con proveedor inexistente en `provider`.
+SELECT
+  p.id,
+  p.sku,
+  p.proveedor_id,
+  p.proveedor_name
+FROM productos p
+LEFT JOIN provider pr
+  ON pr.id = p.proveedor_id
+WHERE p.proveedor_id IS NOT NULL
+  AND pr.id IS NULL;
+
+-- Productos con grupo inexistente.
+SELECT
+  p.id,
+  p.sku,
+  p.proveedor_id,
+  p.price_group_id
+FROM productos p
+LEFT JOIN price_provider_groups pg
+  ON pg.id = p.price_group_id
+WHERE p.price_group_id IS NOT NULL
+  AND pg.id IS NULL;
+
+-- Productos cuyo grupo pertenece a otro proveedor.
+SELECT
+  p.id,
+  p.sku,
+  p.proveedor_id AS producto_provider_id,
+  p.price_group_id,
+  pg.proveedor_id AS group_provider_id
+FROM productos p
+INNER JOIN price_provider_groups pg
+  ON pg.id = p.price_group_id
+WHERE p.price_group_id IS NOT NULL
+  AND p.proveedor_id <> pg.proveedor_id;
+
+-- Productos con marca inexistente.
+SELECT
+  p.id,
+  p.sku,
+  p.marca_id
+FROM productos p
+LEFT JOIN marcas m
+  ON m.id = p.marca_id
+WHERE p.marca_id IS NOT NULL
+  AND m.id IS NULL;
+
+-- Productos con moneda inexistente.
+SELECT
+  p.id,
+  p.sku,
+  p.moneda
+FROM productos p
+LEFT JOIN price_moneda pm
+  ON pm.id = p.moneda
+WHERE pm.id IS NULL;
+
+-- Productos con cost_type invalido o IVAs inconsistentes.
+SELECT
+  p.id,
+  p.sku,
+  p.regular_price,
+  p.cost_type,
+  p.purchase_vat_percent,
+  p.sale_vat_percent
+FROM productos p
+WHERE p.cost_type NOT IN ('net', 'gross')
+   OR p.purchase_vat_percent < 0
+   OR p.sale_vat_percent < 0;
+
+-- Duplicados o vacios para `marcas.slug` antes del UNIQUE.
+SELECT
+  m.slug,
+  COUNT(*) AS total
+FROM marcas m
+GROUP BY m.slug
+HAVING m.slug IS NULL
+    OR TRIM(m.slug) = ''
+    OR COUNT(*) > 1;
+
+-- Proveedores sin grupos activos.
+SELECT
+  pr.id,
+  pr.slug,
+  pr.nombre
+FROM provider pr
+LEFT JOIN price_provider_groups pg
+  ON pg.proveedor_id = pr.id
+ AND pg.is_active = 1
+GROUP BY pr.id, pr.slug, pr.nombre
+HAVING COUNT(pg.id) = 0;
+
+-- Reglas con parametros que pueden requerir revision funcional.
+SELECT
+  r.id,
+  r.price_group_id,
+  r.price_list_id,
+  r.base_markup_percent,
+  r.vat_percent,
+  r.price_markup_percent,
+  r.adjustment_percent,
+  r.is_active
+FROM price_calculation_rules r
+WHERE ABS(r.base_markup_percent) > 100
+   OR ABS(r.price_markup_percent) > 500
+   OR ABS(r.adjustment_percent) > 100;
+
+-- =========================================================
+-- 2. SANEAMIENTO OPCIONAL DE DATOS
+-- Ejecutar solo si las auditorias anteriores devolvieron filas.
+-- =========================================================
+
+-- Productos con grupo inexistente: se limpian para permitir fallback por proveedor.
+UPDATE productos p
+LEFT JOIN price_provider_groups pg
+  ON pg.id = p.price_group_id
+SET p.price_group_id = NULL
+WHERE p.price_group_id IS NOT NULL
+  AND pg.id IS NULL;
+
+-- Productos con marca inexistente: se limpia la referencia para poder cerrar la FK.
+UPDATE productos p
+LEFT JOIN marcas m
+  ON m.id = p.marca_id
+SET p.marca_id = NULL
+WHERE p.marca_id IS NOT NULL
+  AND m.id IS NULL;
+
+-- Productos con moneda inexistente: se reasignan a ARS (id = 1) si no hay match.
+UPDATE productos p
+LEFT JOIN price_moneda pm
+  ON pm.id = p.moneda
+SET p.moneda = 1
+WHERE pm.id IS NULL;
+
+-- Productos con cost_type invalido: se normalizan a gross por compatibilidad con la carga actual.
+UPDATE productos
+SET cost_type = 'gross'
+WHERE cost_type NOT IN ('net', 'gross')
+   OR cost_type IS NULL;
+
+-- Opcional: si existen productos con proveedor inexistente, revisar primero el SELECT de auditoria.
+-- Ejemplo conservador para reasignar al proveedor tecnico SIN PROVEEDOR:
+-- UPDATE productos p
+-- LEFT JOIN provider pr
+--   ON pr.id = p.proveedor_id
+-- SET p.proveedor_id = '36112571-690a-11f1-afe8-fa163edb0855',
+--     p.proveedor_name = 'SIN PROVEEDOR'
+-- WHERE p.proveedor_id IS NOT NULL
+--   AND pr.id IS NULL;
+
+-- =========================================================
+-- 3. NORMALIZACION DE GRUPOS DEFAULT
+-- =========================================================
+
 UPDATE price_provider_groups pg
 INNER JOIN (
   SELECT proveedor_id, MIN(id) AS group_id
@@ -13,3 +190,289 @@ INNER JOIN (
   ON single_group.group_id = pg.id
 SET pg.is_default = 1
 WHERE pg.is_default = 0;
+
+-- =========================================================
+-- 4. CONSOLIDACION DEL MODELO DE COSTOS EN PRODUCTOS
+-- =========================================================
+
+ALTER TABLE productos
+  MODIFY COLUMN regular_price decimal(10,2) DEFAULT NULL COMMENT 'Costo de compra ingresado; interpretar segun cost_type',
+  MODIFY COLUMN cost_type enum('net','gross') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'gross' COMMENT 'Indica si regular_price es neto o incluye IVA de compra',
+  MODIFY COLUMN purchase_vat_percent decimal(5,2) NOT NULL DEFAULT '21.00' COMMENT 'IVA de compra del producto',
+  MODIFY COLUMN sale_vat_percent decimal(5,2) NOT NULL DEFAULT '21.00' COMMENT 'IVA de venta del producto';
+
+ALTER TABLE price_calculation_rules
+  MODIFY COLUMN base_markup_percent decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT 'Recargo tecnico o comercial aplicado sobre el costo ya normalizado',
+  MODIFY COLUMN vat_percent decimal(9,4) NOT NULL DEFAULT '21.0000' COMMENT 'DEPRECADO: reemplazado por productos.sale_vat_percent; se mantiene temporalmente por compatibilidad con price_engine';
+
+-- =========================================================
+-- 5. INDICES NECESARIOS PARA FK Y CONSULTAS FUTURAS
+-- =========================================================
+
+SET @sql := (
+  SELECT CASE
+    WHEN EXISTS (
+      SELECT 1
+      FROM information_schema.statistics s
+      WHERE s.table_schema = @schema_name
+        AND s.table_name = 'productos'
+        AND s.index_name = 'idx_productos_price_group_id'
+    ) THEN 'SELECT ''idx_productos_price_group_id ya existe'' AS info'
+    ELSE 'ALTER TABLE productos ADD KEY idx_productos_price_group_id (price_group_id)'
+  END
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql := (
+  SELECT CASE
+    WHEN EXISTS (
+      SELECT 1
+      FROM information_schema.statistics s
+      WHERE s.table_schema = @schema_name
+        AND s.table_name = 'productos'
+        AND s.index_name = 'idx_productos_marca_id'
+    ) THEN 'SELECT ''idx_productos_marca_id ya existe'' AS info'
+    ELSE 'ALTER TABLE productos ADD KEY idx_productos_marca_id (marca_id)'
+  END
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql := (
+  SELECT CASE
+    WHEN EXISTS (
+      SELECT 1
+      FROM information_schema.statistics s
+      WHERE s.table_schema = @schema_name
+        AND s.table_name = 'productos'
+        AND s.index_name = 'idx_productos_provider_group_currency'
+    ) THEN 'SELECT ''idx_productos_provider_group_currency ya existe'' AS info'
+    ELSE 'ALTER TABLE productos ADD KEY idx_productos_provider_group_currency (proveedor_id, price_group_id, moneda)'
+  END
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+-- =========================================================
+-- 6. REEMPLAZO DE FK VIEJAS HACIA `proveedores`
+-- =========================================================
+
+SET @sql := (
+  SELECT CASE
+    WHEN EXISTS (
+      SELECT 1
+      FROM information_schema.table_constraints tc
+      WHERE tc.table_schema = @schema_name
+        AND tc.table_name = 'productos'
+        AND tc.constraint_name = 'fk_producto_proveedor'
+        AND tc.constraint_type = 'FOREIGN KEY'
+    ) THEN 'ALTER TABLE productos DROP FOREIGN KEY fk_producto_proveedor'
+    ELSE 'SELECT ''fk_producto_proveedor inexistente'' AS info'
+  END
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql := (
+  SELECT CASE
+    WHEN EXISTS (
+      SELECT 1
+      FROM information_schema.table_constraints tc
+      WHERE tc.table_schema = @schema_name
+        AND tc.table_name = 'productos'
+        AND tc.constraint_name = 'fk_productos_proveedor'
+        AND tc.constraint_type = 'FOREIGN KEY'
+    ) THEN 'ALTER TABLE productos DROP FOREIGN KEY fk_productos_proveedor'
+    ELSE 'SELECT ''fk_productos_proveedor inexistente'' AS info'
+  END
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @orphan_provider_count := (
+  SELECT COUNT(*)
+  FROM productos p
+  LEFT JOIN provider pr
+    ON pr.id = p.proveedor_id
+  WHERE p.proveedor_id IS NOT NULL
+    AND pr.id IS NULL
+);
+
+SET @sql := (
+  SELECT CASE
+    WHEN EXISTS (
+      SELECT 1
+      FROM information_schema.table_constraints tc
+      WHERE tc.table_schema = @schema_name
+        AND tc.table_name = 'productos'
+        AND tc.constraint_name = 'fk_productos_provider'
+        AND tc.constraint_type = 'FOREIGN KEY'
+    ) THEN 'SELECT ''fk_productos_provider ya existe'' AS info'
+    WHEN @orphan_provider_count = 0 THEN 'ALTER TABLE productos ADD CONSTRAINT fk_productos_provider FOREIGN KEY (proveedor_id) REFERENCES provider (id) ON DELETE RESTRICT ON UPDATE CASCADE'
+    ELSE 'SELECT ''No se agrega fk_productos_provider: existen productos con proveedor inexistente en provider'' AS warning'
+  END
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+-- =========================================================
+-- 7. FK FALTANTES EN PRODUCTOS
+-- =========================================================
+
+SET @orphan_group_count := (
+  SELECT COUNT(*)
+  FROM productos p
+  LEFT JOIN price_provider_groups pg
+    ON pg.id = p.price_group_id
+  WHERE p.price_group_id IS NOT NULL
+    AND pg.id IS NULL
+);
+
+SET @sql := (
+  SELECT CASE
+    WHEN EXISTS (
+      SELECT 1
+      FROM information_schema.table_constraints tc
+      WHERE tc.table_schema = @schema_name
+        AND tc.table_name = 'productos'
+        AND tc.constraint_name = 'fk_productos_price_group'
+        AND tc.constraint_type = 'FOREIGN KEY'
+    ) THEN 'SELECT ''fk_productos_price_group ya existe'' AS info'
+    WHEN @orphan_group_count = 0 THEN 'ALTER TABLE productos ADD CONSTRAINT fk_productos_price_group FOREIGN KEY (price_group_id) REFERENCES price_provider_groups (id) ON DELETE SET NULL ON UPDATE CASCADE'
+    ELSE 'SELECT ''No se agrega fk_productos_price_group: existen productos con grupos invalidos'' AS warning'
+  END
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @orphan_currency_count := (
+  SELECT COUNT(*)
+  FROM productos p
+  LEFT JOIN price_moneda pm
+    ON pm.id = p.moneda
+  WHERE pm.id IS NULL
+);
+
+SET @sql := (
+  SELECT CASE
+    WHEN EXISTS (
+      SELECT 1
+      FROM information_schema.table_constraints tc
+      WHERE tc.table_schema = @schema_name
+        AND tc.table_name = 'productos'
+        AND tc.constraint_name = 'fk_productos_moneda'
+        AND tc.constraint_type = 'FOREIGN KEY'
+    ) THEN 'SELECT ''fk_productos_moneda ya existe'' AS info'
+    WHEN @orphan_currency_count = 0 THEN 'ALTER TABLE productos ADD CONSTRAINT fk_productos_moneda FOREIGN KEY (moneda) REFERENCES price_moneda (id) ON DELETE RESTRICT ON UPDATE CASCADE'
+    ELSE 'SELECT ''No se agrega fk_productos_moneda: existen productos con moneda invalida'' AS warning'
+  END
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @orphan_brand_count := (
+  SELECT COUNT(*)
+  FROM productos p
+  LEFT JOIN marcas m
+    ON m.id = p.marca_id
+  WHERE p.marca_id IS NOT NULL
+    AND m.id IS NULL
+);
+
+SET @sql := (
+  SELECT CASE
+    WHEN EXISTS (
+      SELECT 1
+      FROM information_schema.table_constraints tc
+      WHERE tc.table_schema = @schema_name
+        AND tc.table_name = 'productos'
+        AND tc.constraint_name = 'fk_productos_marca'
+        AND tc.constraint_type = 'FOREIGN KEY'
+    ) THEN 'SELECT ''fk_productos_marca ya existe'' AS info'
+    WHEN @orphan_brand_count = 0 THEN 'ALTER TABLE productos ADD CONSTRAINT fk_productos_marca FOREIGN KEY (marca_id) REFERENCES marcas (id) ON DELETE SET NULL ON UPDATE CASCADE'
+    ELSE 'SELECT ''No se agrega fk_productos_marca: existen productos con marca invalida'' AS warning'
+  END
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+-- =========================================================
+-- 8. UNIQUE EN MARCAS.SLUG
+-- =========================================================
+
+SET @can_add_brand_slug_unique := (
+  SELECT CASE
+    WHEN EXISTS (
+      SELECT 1
+      FROM marcas m
+      WHERE m.slug IS NULL
+         OR TRIM(m.slug) = ''
+    ) THEN 0
+    WHEN EXISTS (
+      SELECT 1
+      FROM (
+        SELECT m.slug
+        FROM marcas m
+        GROUP BY m.slug
+        HAVING COUNT(*) > 1
+      ) duplicated_slug
+    ) THEN 0
+    ELSE 1
+  END
+);
+
+SET @sql := (
+  SELECT CASE
+    WHEN EXISTS (
+      SELECT 1
+      FROM information_schema.statistics s
+      WHERE s.table_schema = @schema_name
+        AND s.table_name = 'marcas'
+        AND s.index_name = 'uq_marcas_slug'
+    ) THEN 'SELECT ''uq_marcas_slug ya existe'' AS info'
+    WHEN @can_add_brand_slug_unique = 1 THEN 'ALTER TABLE marcas ADD UNIQUE KEY uq_marcas_slug (slug)'
+    ELSE 'SELECT ''No se agrega uq_marcas_slug: existen slugs vacios, nulos o duplicados en marcas'' AS warning'
+  END
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+-- =========================================================
+-- 9. VERIFICACIONES FINALES
+-- =========================================================
+
+SHOW CREATE TABLE productos;
+SHOW CREATE TABLE marcas;
+SHOW CREATE TABLE price_calculation_rules;
+
+SELECT
+  tc.table_name,
+  tc.constraint_name,
+  tc.constraint_type
+FROM information_schema.table_constraints tc
+WHERE tc.table_schema = @schema_name
+  AND tc.table_name IN ('productos', 'marcas')
+ORDER BY tc.table_name, tc.constraint_type, tc.constraint_name;
+
+SELECT
+  kcu.table_name,
+  kcu.column_name,
+  kcu.constraint_name,
+  kcu.referenced_table_name,
+  kcu.referenced_column_name
+FROM information_schema.key_column_usage kcu
+WHERE kcu.table_schema = @schema_name
+  AND kcu.table_name = 'productos'
+  AND kcu.referenced_table_name IS NOT NULL
+ORDER BY kcu.constraint_name, kcu.column_name;
