@@ -48,7 +48,7 @@ class OverrideResolver
         }
 
         $manualPriceNet = (float)$context['manual_price_net'];
-        $vatPercent = (float)($context['vat_percent'] ?? 0);
+        $vatPercent = (float)($context['sale_vat_percent'] ?? 0);
 
         return round($manualPriceNet * (1 + ($vatPercent / 100)), 2);
     }

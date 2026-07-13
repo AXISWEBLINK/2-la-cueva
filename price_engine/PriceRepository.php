@@ -18,9 +18,16 @@ class PriceRepository
             p.id AS product_id,
             p.sku,
             p.name,
+            p.name2,
             p.regular_price,
+            p.cost_type,
+            p.purchase_vat_percent,
+            p.sale_vat_percent,
             p.proveedor_id,
+            p.proveedor_name,
             p.moneda,
+            pm.codigo AS currency_code,
+            pm.simbolo AS currency_symbol,
             p.marca_id,
             p.marca AS brand_name,
             pr.nombre AS provider_name,
@@ -44,7 +51,6 @@ class PriceRepository
             pl.prices_include_vat,
             r.id AS rule_id,
             r.base_markup_percent,
-            r.vat_percent,
             r.price_markup_percent,
             r.adjustment_percent,
             o.id AS override_id,
@@ -56,6 +62,8 @@ class PriceRepository
         FROM productos p
         INNER JOIN provider pr
             ON pr.id = p.proveedor_id
+        LEFT JOIN price_moneda pm
+            ON pm.id = p.moneda
         LEFT JOIN price_provider_groups pg_product
             ON pg_product.id = p.price_group_id
            AND pg_product.is_active = 1
@@ -103,6 +111,84 @@ class PriceRepository
         $row['category_ids'] = $this->getProductCategoryIds($productId);
 
         return $row;
+    }
+
+    public function getActivePriceLists(): array
+    {
+        $sql = "
+        SELECT
+            id,
+            code,
+            name,
+            channel,
+            is_default_budget,
+            is_default_export,
+            is_default_web,
+            sort_order
+        FROM price_lists_name
+        WHERE is_active = 1
+        ORDER BY sort_order ASC, name ASC, id ASC
+        ";
+
+        $stmt = $this->pdo->query($sql);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function searchProducts(string $term, int $limit = 20): array
+    {
+        $term = trim($term);
+
+        if ($term === '') {
+            return [];
+        }
+
+        $limit = max(1, min($limit, 50));
+        $sql = "
+        SELECT
+            p.id,
+            p.sku,
+            p.name,
+            p.name2,
+            p.proveedor_id,
+            p.proveedor_name,
+            pr.nombre AS provider_name,
+            p.regular_price,
+            p.cost_type,
+            p.purchase_vat_percent,
+            p.sale_vat_percent,
+            p.updated_at
+        FROM productos p
+        LEFT JOIN provider pr
+            ON pr.id = p.proveedor_id
+        WHERE p.id = :exact_term
+           OR p.sku = :term
+           OR p.sku LIKE :like_term
+           OR p.name LIKE :like_term
+           OR p.name2 LIKE :like_term
+        ORDER BY
+            CASE
+                WHEN p.id = :exact_term_order THEN 0
+                WHEN p.sku = :term_order THEN 1
+                WHEN p.sku LIKE :prefix_term THEN 2
+                ELSE 3
+            END,
+            p.updated_at DESC,
+            p.id ASC
+        LIMIT {$limit}
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':exact_term' => $term,
+            ':term' => $term,
+            ':like_term' => '%' . $term . '%',
+            ':exact_term_order' => $term,
+            ':term_order' => $term,
+            ':prefix_term' => $term . '%',
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
     public function getCampaigns(array $context, string $priceListId): array

@@ -1,7 +1,6 @@
 SQL Resumido para enviar
 
 
-
 TABLA: categorias
 
 CREATE TABLE `categorias` (
@@ -22,28 +21,8 @@ ALTER TABLE `categorias`
 ALTER TABLE `categorias`
   ADD CONSTRAINT `fk_categorias_parent` FOREIGN KEY (`parent_id`) REFERENCES `categorias` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-INSERT INTO `categorias` (`id`, `nombre`, `parent_id`, `delete_block`, `created_at`, `updated_at`, `is_active`) VALUES
-('14b3f64f-740a-11f1-8ac9-fa163edb0855', 'Vasos', '954e880a-7409-11f1-8ac9-fa163edb0855', 0, '2026-06-30 01:30:07', '2026-06-30 01:30:07', 1),
-('45f55be9-28e6-11f1-8125-fa163edb0855', 'Pesca', NULL, 1, '2026-06-10 05:40:58', '2026-06-12 23:33:24', 1),
-('501210a5-7e4a-11f1-8ac9-fa163edb0855', 'Accesorios', '954e880a-7409-11f1-8ac9-fa163edb0855', 0, '2026-07-12 23:35:06', '2026-07-12 23:35:06', 1),
-('51271a4e-28e6-11f1-8125-fa163edb0855', 'Reeles', '45f55be9-28e6-11f1-8125-fa163edb0855', 0, '2026-06-10 05:40:58', '2026-06-10 05:40:58', 1),
-('549a404b-70e2-11f1-afe8-fa163edb0855', 'Linternas', '86533055-2a36-11f1-8125-fa163edb0855', 0, '2026-06-26 01:08:00', '2026-06-26 01:08:00', 1),
-('5c767e38-758b-11f1-8ac9-fa163edb0855', 'Machetes', '954e880a-7409-11f1-8ac9-fa163edb0855', 0, '2026-07-01 23:28:03', '2026-07-01 23:28:03', 1),
-('6932533e-28e6-11f1-8125-fa163edb0855', 'Frontales', '51271a4e-28e6-11f1-8125-fa163edb0855', 0, '2026-06-10 05:40:58', '2026-06-10 05:40:58', 1),
-('6ba0b0f7-7588-11f1-8ac9-fa163edb0855', 'Cortaplumas', '954e880a-7409-11f1-8ac9-fa163edb0855', 0, '2026-07-01 23:07:00', '2026-07-01 23:07:00', 1),
-('6db228ff-28e6-11f1-8125-fa163edb0855', 'Rotativos', '51271a4e-28e6-11f1-8125-fa163edb0855', 0, '2026-06-10 05:40:58', '2026-06-10 05:40:58', 1),
-('73855858-7616-11f1-8ac9-fa163edb0855', 'Armeria', NULL, 0, '2026-07-02 16:03:42', '2026-07-02 16:03:42', 1),
-('7e20e528-7616-11f1-8ac9-fa163edb0855', 'Infladores', '73855858-7616-11f1-8ac9-fa163edb0855', 0, '2026-07-02 16:04:00', '2026-07-02 16:04:00', 1),
-('85f90ed9-7e4a-11f1-8ac9-fa163edb0855', 'Artefactos a gas', '954e880a-7409-11f1-8ac9-fa163edb0855', 0, '2026-07-12 23:36:36', '2026-07-12 23:36:36', 1),
-('86533055-2a36-11f1-8125-fa163edb0855', 'Caza', NULL, 1, '2026-06-10 05:40:58', '2026-06-12 23:33:26', 1),
-('8ba9f529-7617-11f1-8ac9-fa163edb0855', 'Mochilas', '954e880a-7409-11f1-8ac9-fa163edb0855', 0, '2026-07-02 16:11:32', '2026-07-02 16:11:32', 1),
-('954e880a-7409-11f1-8ac9-fa163edb0855', 'Camping', NULL, 0, '2026-06-30 01:26:33', '2026-06-30 01:26:33', 1),
-('a1dc948e-71b3-11f1-afe8-fa163edb0855', 'Indumentaria', NULL, 0, '2026-06-27 02:06:15', '2026-06-27 02:06:15', 1),
-('b34bfd22-71b3-11f1-afe8-fa163edb0855', 'Gorras', 'a1dc948e-71b3-11f1-afe8-fa163edb0855', 0, '2026-06-27 02:06:44', '2026-06-27 02:06:44', 1),
-('dd32cd86-7618-11f1-8ac9-fa163edb0855', 'Municiones', '73855858-7616-11f1-8ac9-fa163edb0855', 0, '2026-07-02 16:20:58', '2026-07-02 16:20:58', 1),
-('df81c5f8-6474-11f1-afe8-fa163edb0855', 'SIN CATEGORIA', NULL, 1, '2026-06-10 05:40:58', '2026-06-12 23:33:01', 1),
-('f84f571d-7617-11f1-8ac9-fa163edb0855', 'Pistolas', '73855858-7616-11f1-8ac9-fa163edb0855', 0, '2026-07-02 16:14:34', '2026-07-02 16:14:34', 1),
-('f9a3eb9c-7616-11f1-8ac9-fa163edb0855', 'Accesorios', '73855858-7616-11f1-8ac9-fa163edb0855', 0, '2026-07-02 16:07:27', '2026-07-02 16:07:27', 1);
+('14b3f64f-740a-11f1-8ac9-fa163edb0855', 'Vasos', '954e880a-7409-11f1-8ac9-fa163edb0855', 0, '2026-06-30 01:30:07', '2026-06-30 01:30:07', 1)
+
 
 
 TABLA: categorias_productos
@@ -62,13 +41,13 @@ ALTER TABLE `categorias_productos`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uniq_prod_cat` (`producto_id`,`categoria_id`),
   ADD KEY `idx_categoria` (`categoria_id`),
-  ADD KEY `idx_categoria_active` (`categoria_id`,`is_active`,`producto_id`);
+  ADD KEY `idx_categoria_active` (`categoria_id`,`is_active`,`producto_id`),
+  ADD KEY `idx_producto_active` (`producto_id`,`is_active`,`categoria_id`);
 ALTER TABLE `categorias_productos`
   ADD CONSTRAINT `fk_cp_producto` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_pc_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-INSERT INTO `categorias_productos` (`id`, `producto_id`, `categoria_id`, `created_at`, `updated_at`, `is_active`) VALUES
-('5dbae780-7ce9-11f1-8ac9-fa163edb0855', 'd56ab0d2-7191-11f1-afe8-fa163edb0855', 'df81c5f8-6474-11f1-afe8-fa163edb0855', '2026-07-11 05:28:36', '2026-07-11 05:28:36', 1);
+No se encontro una primera fila de datos para resumir.
 
 
 
@@ -85,9 +64,10 @@ CREATE TABLE `marcas` (
 
 Mas datos:
 ALTER TABLE `marcas`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_marcas_slug` (`slug`);
 
-No se encontraron datos INSERT para esta tabla.
+No se encontro una primera fila de datos para resumir.
 
 
 
@@ -97,8 +77,8 @@ CREATE TABLE `price_calculation_rules` (
   `id` char(36) COLLATE utf8mb4_general_ci NOT NULL DEFAULT (uuid()) COMMENT 'UUID de la regla',
   `price_group_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Grupo del proveedor tabla price_provider_groups',
   `price_list_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Lista de precios tabla price_lists_name',
-  `base_markup_percent` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT 'COMMENT ''Recargo sobre el costo (ej.: IVA del costo si el proveedor informa precios netos)''',
-  `vat_percent` decimal(9,4) NOT NULL DEFAULT '21.0000' COMMENT 'IVA',
+  `base_markup_percent` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT 'Recargo tecnico o comercial aplicado sobre el costo ya normalizado',
+  `vat_percent` decimal(9,4) NOT NULL DEFAULT '21.0000' COMMENT 'DEPRECADO: reemplazado por productos.sale_vat_percent; se mantiene temporalmente por compatibilidad con price_engine',
   `price_markup_percent` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT 'Margen comercial',
   `adjustment_percent` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT 'Ajuste final',
   `priority` smallint UNSIGNED NOT NULL DEFAULT '100' COMMENT 'Prioridad futura',
@@ -119,13 +99,14 @@ ALTER TABLE `price_calculation_rules`
   ADD CONSTRAINT `fk_pplr_list` FOREIGN KEY (`price_list_id`) REFERENCES `price_lists_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 INSERT INTO `price_calculation_rules` (`id`, `price_group_id`, `price_list_id`, `base_markup_percent`, `vat_percent`, `price_markup_percent`, `adjustment_percent`, `priority`, `is_active`, `notes`, `created_at`, `updated_at`) VALUES
+('0727959a-7cf3-11f1-8ac9-fa163edb0855', 'd0152204-7cf2-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-11 06:37:46', '2026-07-11 06:37:46'),
 ('1eab65e4-7b4e-11f1-8ac9-fa163edb0855', 'a4373ff7-7b4d-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-09 04:24:47', '2026-07-09 04:25:42'),
+('2429af86-7ceb-11f1-8ac9-fa163edb0855', '048136e7-7cea-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-11 05:41:19', '2026-07-11 05:41:19'),
 ('6025c6f8-7b48-11f1-8ac9-fa163edb0855', '6d23372c-7b46-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 100.0000, 0.0000, 100, 1, NULL, '2026-07-09 03:43:40', '2026-07-09 03:43:40'),
 ('62f04eb5-7b47-11f1-8ac9-fa163edb0855', '3d34987e-7b46-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-09 03:36:35', '2026-07-09 03:36:35'),
 ('6e7d9d04-7b4f-11f1-8ac9-fa163edb0855', '3d34987e-7b46-11f1-8ac9-fa163edb0855', 'f4dcdbf5-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 45.0000, 0.0000, 100, 1, NULL, '2026-07-09 04:34:11', '2026-07-09 04:34:11'),
 ('f4cff0b5-7b4c-11f1-8ac9-fa163edb0855', 'a4086b02-7b4b-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, -10.0000, 100, 1, NULL, '2026-07-09 04:16:28', '2026-07-09 04:17:47');
-('2429af86-7ceb-11f1-8ac9-fa163edb0855', '048136e7-7cea-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-11 05:41:19', '2026-07-11 05:41:19'),
-('0727959a-7cf3-11f1-8ac9-fa163edb0855', 'd0152204-7cf2-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-11 06:37:46', '2026-07-11 06:37:46'),
+
 
 
 TABLA: price_campaign_targets
@@ -313,14 +294,12 @@ ALTER TABLE `price_provider_groups`
   ADD CONSTRAINT `fk_price_provider_groups_provider` FOREIGN KEY (`proveedor_id`) REFERENCES `provider` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 INSERT INTO `price_provider_groups` (`id`, `proveedor_id`, `group_code`, `nombre`, `descripcion`, `orden`, `is_default`, `is_active`, `created_at`, `updated_at`) VALUES
+('048136e7-7cea-11f1-8ac9-fa163edb0855', '390d2b6c-70f3-11f1-afe8-fa163edb0855', 'GENERAL', 'general', 'GENERAL Z PROVEEDOR PRUEBA', 100, 1, 1, '2026-07-11 05:33:16', '2026-07-13 01:30:03'),
 ('3d34987e-7b46-11f1-8ac9-fa163edb0855', '412222e6-603e-11f1-afe8-fa163edb0855', 'GENERAL', 'General', 'General de Proveedor      Baraldo', 100, 1, 1, '2026-07-09 03:28:22', '2026-07-09 04:08:18'),
 ('6d23372c-7b46-11f1-8ac9-fa163edb0855', '412222e6-603e-11f1-afe8-fa163edb0855', 'ACEITES', 'Aceites', 'Grupo: Aceites proveedor Baraldo', 100, 0, 1, '2026-07-09 03:29:43', '2026-07-09 04:09:13'),
 ('a4086b02-7b4b-11f1-8ac9-fa163edb0855', 'fe2762bf-6adf-11f1-afe8-fa163edb0855', 'GENERAL', 'General', 'General de Proveedor      Wescamp', 100, 1, 1, '2026-07-09 04:07:02', '2026-07-09 04:08:32'),
-('a4373ff7-7b4d-11f1-8ac9-fa163edb0855', 'fe2762bf-6adf-11f1-afe8-fa163edb0855', 'CONTIGO', 'Contigo', 'Grupo Contigo de proveedor Wescamp', 100, 0, 1, '2026-07-09 04:21:22', '2026-07-09 04:21:22');
-('048136e7-7cea-11f1-8ac9-fa163edb0855', '390d2b6c-70f3-11f1-afe8-fa163edb0855', 'GENERAL', 'general', 'GENERAL Z PROVEEDOR PRUEBA', 100, 0, 1, '2026-07-11 05:33:16', '2026-07-11 06:01:53'),
-('d0152204-7cf2-11f1-8ac9-fa163edb0855', '3758f6fe-28e0-11f1-8125-fa163edb0855', 'GENERAL', 'GENERAL FISHING', 'GENERAL FISHING', 100, 0, 1, '2026-07-11 06:36:14', '2026-07-11 06:36:14');
-
-
+('a4373ff7-7b4d-11f1-8ac9-fa163edb0855', 'fe2762bf-6adf-11f1-afe8-fa163edb0855', 'CONTIGO', 'Contigo', 'Grupo Contigo de proveedor Wescamp', 100, 0, 1, '2026-07-09 04:21:22', '2026-07-09 04:21:22'),
+('d0152204-7cf2-11f1-8ac9-fa163edb0855', '3758f6fe-28e0-11f1-8125-fa163edb0855', 'GENERAL', 'GENERAL FISHING', 'GENERAL FISHING', 100, 1, 1, '2026-07-11 06:36:14', '2026-07-13 01:30:03');
 
 
 
@@ -337,8 +316,8 @@ CREATE TABLE `productos` (
   `proveedor_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '36112571-690a-11f1-afe8-fa163edb0855',
   `price_group_id` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `proveedor_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'INDEFINIDO',
-  `regular_price` decimal(10,2) DEFAULT NULL COMMENT 'Precio de costo',
-  `cost_type` enum('net','gross') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'gross' COMMENT 'Indica si regular_price es neto o incluye IVA',
+  `regular_price` decimal(10,2) DEFAULT NULL COMMENT 'Costo de compra ingresado; interpretar segun cost_type',
+  `cost_type` enum('net','gross') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'gross' COMMENT 'Indica si regular_price es neto o incluye IVA de compra',
   `purchase_vat_percent` decimal(5,2) NOT NULL DEFAULT '21.00' COMMENT 'IVA de compra del producto',
   `sale_vat_percent` decimal(5,2) NOT NULL DEFAULT '21.00' COMMENT 'IVA de venta del producto',
   `regular_dolar` decimal(10,2) DEFAULT NULL,
@@ -388,16 +367,21 @@ ALTER TABLE `productos`
   ADD KEY `idx_cat3` (`cat_3`),
   ADD KEY `idx_cat4` (`cat_4`),
   ADD KEY `idx_productos_public_enabled` (`public_enabled`),
-  ADD KEY `idx_primary_media_id` (`primary_media_id`);
+  ADD KEY `idx_primary_media_id` (`primary_media_id`),
+  ADD KEY `idx_productos_price_group_id` (`price_group_id`),
+  ADD KEY `idx_productos_marca_id` (`marca_id`),
+  ADD KEY `idx_productos_provider_group_currency` (`proveedor_id`,`price_group_id`,`moneda`);
 ALTER TABLE `productos` ADD FULLTEXT KEY `ft_name_name2` (`name`,`name2`);
 ALTER TABLE `productos`
   MODIFY `increm` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18924;
 ALTER TABLE `productos`
   ADD CONSTRAINT `fk_producto_proveedor` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_productos_marca` FOREIGN KEY (`marca_id`) REFERENCES `marcas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_productos_moneda` FOREIGN KEY (`moneda`) REFERENCES `price_moneda` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_productos_price_group` FOREIGN KEY (`price_group_id`) REFERENCES `price_provider_groups` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_productos_primary_media` FOREIGN KEY (`primary_media_id`) REFERENCES `media` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_productos_proveedor` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
-
+  ADD CONSTRAINT `fk_productos_proveedor` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_productos_provider` FOREIGN KEY (`proveedor_id`) REFERENCES `provider` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 INSERT INTO `productos` (`increm`, `id`, `id_producto`, `sku`, `gtin13`, `name`, `name2`, `proveedor_id`, `price_group_id`, `proveedor_name`, `regular_price`, `cost_type`, `purchase_vat_percent`, `sale_vat_percent`, `regular_dolar`, `price_manual`, `stock`, `porcen_regular_price`, `pro_nota`, `pro_oferta`, `pro_favorito`, `pro_cant_ventas`, `pro_local`, `pro_create_auto`, `moneda`, `cat_1`, `cat_2`, `cat_3`, `cat_4`, `description`, `marca`, `marca_id`, `slug`, `json_extra`, `created_at`, `updated_at`, `public_handle`, `public_enabled`, `primary_media_id`) VALUES
 (11505, '5dc0b2fd-6410-11f1-afe8-fa163edb0855', NULL, '150300', NULL, 'ACEITE BORO DESENGRASANTE P/ARM.NARANJA', NULL, '412222e6-603e-11f1-afe8-fa163edb0855', '6d23372c-7b46-11f1-8ac9-fa163edb0855', 'BARALDO', 18080.00, 'gross', 21.00, 21.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 1, 1, 'ARMERIA', 'ACCESORIOS ARMERIA', 'ACEITES Y LUBRICANTES', NULL, NULL, 'BORO', NULL, NULL, NULL, '2026-06-09 11:34:48', '2026-07-09 02:35:54', NULL, 0, NULL),
@@ -405,9 +389,6 @@ INSERT INTO `productos` (`increm`, `id`, `id_producto`, `sku`, `gtin13`, `name`,
 (11506, '5dc0b863-6410-11f1-afe8-fa163edb0855', NULL, '150301', NULL, 'ACEITE BORO DESENCOBRANTE P/ARMAS AZUL', NULL, '412222e6-603e-11f1-afe8-fa163edb0855', NULL, 'BARALDO', 18080.00, 'gross', 21.00, 21.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 1, 1, 'ARMERIA', 'ACCESORIOS ARMERIA', 'ACEITES Y LUBRICANTES', NULL, NULL, 'BORO', NULL, NULL, NULL, '2026-06-09 11:34:48', '2026-07-11 03:27:10', NULL, 0, NULL),
 (18919, 'd56ab0d2-7191-11f1-afe8-fa163edb0855', NULL, 'SWAT448243', NULL, 'Linterna reforzada 2000x (PRUEBA)', NULL, '390d2b6c-70f3-11f1-afe8-fa163edb0855', NULL, 'z PROVEEDOR DE PRUEBA', 10000.00, 'gross', 21.00, 21.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-26 16:04:18', '2026-07-04 16:22:28', NULL, 0, '49640532-750f-11f1-8ac9-fa163edb0855');
 (6479, '914a7681-63ba-11f1-afe8-fa163edb0855', NULL, '3647', NULL, 'Tapón mediano c/ luz - Unidad', NULL, '3758f6fe-28e0-11f1-8125-fa163edb0855', NULL, 'FISHING', 6885.00, 'gross', 21.00, 21.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 1, 1, 'varios', 'TAPÓN PARA MATE', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-09 01:20:37', '2026-07-04 14:18:26', NULL, 0, NULL),
-
-
-
 
 TABLA: provider
 

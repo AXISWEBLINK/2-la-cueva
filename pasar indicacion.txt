@@ -19,5 +19,5 @@ https://cuev.tiendaenred.com/price_engine/test_price_engine.php
 
 para que sepas como esta la base de datos podes ver en: dbprecios.txt
 si necesitas hacer una correccion o alguna modificacion de mis tablas para agregar funcionamientos:
-crea: sq_db_correccion.txt con los comandos sql asi los aplico manualmentye.
+crea: sq_db_correccion.txt con los comandos sql asi los aplico manualmente.
 
