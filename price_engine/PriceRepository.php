@@ -28,6 +28,7 @@ class PriceRepository
             p.moneda,
             pm.codigo AS currency_code,
             pm.simbolo AS currency_symbol,
+            pm.cotizacion AS currency_rate,
             p.marca_id,
             p.marca AS brand_name,
             pr.nombre AS provider_name,
@@ -135,11 +136,27 @@ class PriceRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
-    public function searchProducts(string $term, int $limit = 20): array
+    public function getProviders(): array
+    {
+        $sql = "
+        SELECT
+            id,
+            nombre
+        FROM provider
+        ORDER BY nombre ASC, id ASC
+        ";
+
+        $stmt = $this->pdo->query($sql);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function searchProducts(string $term, ?string $providerId = null, int $limit = 20): array
     {
         $term = trim($term);
+        $providerId = trim((string)$providerId);
 
-        if ($term === '') {
+        if ($term === '' && $providerId === '') {
             return [];
         }
 
@@ -161,15 +178,22 @@ class PriceRepository
         FROM productos p
         LEFT JOIN provider pr
             ON pr.id = p.proveedor_id
-        WHERE p.id = :exact_term
-           OR p.sku = :term
-           OR p.sku LIKE :like_term
-           OR p.name LIKE :like_term
-           OR p.name2 LIKE :like_term
+        WHERE (
+                :has_term = 0
+             OR p.id = :exact_term
+             OR p.sku = :exact_sku
+             OR p.sku LIKE :sku_like_term
+             OR p.name LIKE :name_like_term
+             OR p.name2 LIKE :name2_like_term
+        )
+          AND (
+                :has_provider = 0
+             OR p.proveedor_id = :provider_id
+        )
         ORDER BY
             CASE
                 WHEN p.id = :exact_term_order THEN 0
-                WHEN p.sku = :term_order THEN 1
+                WHEN p.sku = :exact_sku_order THEN 1
                 WHEN p.sku LIKE :prefix_term THEN 2
                 ELSE 3
             END,
@@ -180,11 +204,16 @@ class PriceRepository
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
+            ':has_term' => $term === '' ? 0 : 1,
             ':exact_term' => $term,
-            ':term' => $term,
-            ':like_term' => '%' . $term . '%',
+            ':exact_sku' => $term,
+            ':sku_like_term' => '%' . $term . '%',
+            ':name_like_term' => '%' . $term . '%',
+            ':name2_like_term' => '%' . $term . '%',
+            ':has_provider' => $providerId === '' ? 0 : 1,
+            ':provider_id' => $providerId,
             ':exact_term_order' => $term,
-            ':term_order' => $term,
+            ':exact_sku_order' => $term,
             ':prefix_term' => $term . '%',
         ]);
 
