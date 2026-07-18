@@ -130,7 +130,7 @@ try {
     foreach ($priceLists as $priceList) {
         $optionValue = (string)($priceList['id'] ?? '');
         $selected = $optionValue === $selectedPriceListId ? ' selected' : '';
-        $label = trim((string)($priceList['name'] ?? '') . ' (' . (string)($priceList['code'] ?? '') . ')');
+        $label = trim((string)($priceList['name'] ?? ''));
         echo '<option value="' . $escape($optionValue) . '"' . $selected . '>' . $escape($label) . '</option>';
     }
 
@@ -178,7 +178,7 @@ try {
         echo '<tr><th>Tipo de costo</th><td>' . $escape(strtoupper((string)($context['cost_type'] ?? ''))) . '</td></tr>';
         echo '<tr><th>IVA compra</th><td>' . $escape($formatAmount((float)($context['purchase_vat_percent'] ?? 0))) . '</td></tr>';
         echo '<tr><th>IVA venta</th><td>' . $escape($formatAmount((float)($context['sale_vat_percent'] ?? 0))) . '</td></tr>';
-        echo '<tr><th>Lista</th><td>' . $escape($context['price_list_name'] ?? '') . '<div class="muted">' . $escape($context['price_list_code'] ?? '') . '</div></td></tr>';
+        echo '<tr><th>Lista</th><td>' . $escape($context['price_list_name'] ?? '') . '</td></tr>';
         echo '</table>';
         echo '</div>';
 

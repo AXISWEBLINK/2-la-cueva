@@ -1,7 +1,6 @@
-Mirar mis archivos y crear  PriceEngine_Specification_v2.md
-porque PriceEngine_Specification_v1.md quedo antiguo.
-para dejar una muy breve explicacion de como funciona el sistema de precios.
-y dejar acentado en ese, que toda operacion se resuelva con el motor de precios, ya que en unos pasos mas voy a traer mi sistema  para meter esto en un listado de productos
+ dejar acentado en ese, que toda operacion se resuelva
+  con el motor de precios, ya que en unos pasos mas voy
+   a traer mi sistema  para meter esto en un listado de productos
 
 en este momento no tenes coneccion a mi base de datos directamente.
 este sistema que ves lo tengo conectado por ftp a mi hosting y realizo directamente las pruebas online
@@ -9,62 +8,15 @@ en:
 ej: https://cuev.tiendaenred.com/price_engine/test_price_engine.php
 para que sepas como esta la base de datos podes ver en la raiz: /dbprecios.txt
 
-de paso revisar rapidamente si quedo todo correcta la operacion, ya que estoy probando: test_price_engine.php
-y lo veo todo correcto.
-
 
 si necesitas hacer una correccion o alguna modificacion de mis tablas para agregar funcionamientos:
-crea: sq_db_correccion.txt con los comandos sql asi los aplico manualmentye.
+crear: sq_db_correccion.txt con los comandos sql asi los aplico manualmentye.
 
 si hay alguna correction que hay que hacer en la base de datos, colocar los comandos en:
 /sq_db_correccion.txt
 asi aplico los cambios directamente en la base de datos con el comando sql en myphpmyadmin
 haceme todas las consultas/ preguntas que necesites de 5 a 10 consultas, si necesitas.
 
-
---------
-
-reparar:
-test_price_engine.php
-
-quiero poder buscar un producto solo por sku en:
-<input type="text" name="product_search" value="" placeholder="Ej: 101-CTG-1182ML-BC o Contigo">
-(tabla productos columna sku)
-puede llegar a ser necesario seleccionar un proveedor tabla "provider"
-y si queres mejoralo mas a test_price_engine.php
-tambien en:
-<label>Price List ID<input type="text" name="price_list_id" value=,etc
-a parte del textbox manual, un desplegable para poder seleccionar directamente el proovedor de "provider"
-
-en la actualidad al buscar un producto por sku en:
-de:
-https://cuev.tiendaenred.com/price_engine/test_price_engine.php
-<input type="text" name="product_search" value="" placeholder="Ej: 101-CTG-1182ML-BC o Contigo">
-
-,sale error al poner un sku de mis productos:
-zzprueba1-sku1
-al precionar el boton de "calcular Precio"
-cambia  el http:
-https://cuev.tiendaenred.com/price_engine/test_price_engine.php?product_id=1124d263-6df9-11f1-afe8-fa163edb0855&price_list_id=f4dcd91d-74e1-11f1-8ac9-fa163edb0855&product_search=zzprueba1-sku1
-Error en PriceEngine
-SQLSTATE[HY093]: Invalid parameter number
-
-#0 /home/enred/public_html/_cuev/price_engine/PriceRepository.php(182): PDOStatement->execute()
-#1 /home/enred/public_html/_cuev/price_engine/test_price_engine.php(25): PriceRepository->searchProducts()
-#2 {main}
-
-
-en:
-https://cuev.tiendaenred.com/price_engine/test_price_engine.php
-mostrar tambien:
-
-`cotizacion` de dolar de la tabla:`price_moneda`
-y multiplicarla por: Precio Final
-
-pero ojo, en el motor no lo voy a usar porque necesito los precios resueltos
-solo de la ganancia, por el momento no necesito el final en pesos
-si no el final en dolares.
-pero es bueno tenerlo por si lo necesito.
 
 
 

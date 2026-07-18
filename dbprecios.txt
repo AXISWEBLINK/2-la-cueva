@@ -182,9 +182,7 @@ TABLA: price_lists_name
 
 CREATE TABLE `price_lists_name` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT (uuid()),
-  `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `channel` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'internal',
   `sort_order` smallint UNSIGNED NOT NULL DEFAULT '100',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `is_default_budget` tinyint(1) NOT NULL DEFAULT '0',
@@ -202,15 +200,15 @@ CREATE TABLE `price_lists_name` (
 Mas datos:
 ALTER TABLE `price_lists_name`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_price_lists_v2_code` (`code`),
+  ADD UNIQUE KEY `uq_price_lists_v2_name` (`name`),
   ADD KEY `idx_price_lists_v2_active_order` (`is_active`,`sort_order`);
 
-INSERT INTO `price_lists_name` (`id`, `code`, `name`, `channel`, `sort_order`, `is_active`, `is_default_budget`, `is_default_export`, `is_default_web`, `apply_rounding`, `rounding_mode`, `rounding_step`, `show_decimals`, `prices_include_vat`, `created_at`, `updated_at`) VALUES
-('dd16049d-74f1-11f1-8ac9-fa163edb0855', 'mercadolibre', 'Mercadolibre', 'mercadolibre', 60, 1, 0, 0, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 02:09:17', '2026-07-09 04:29:07'),
-('f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 'lista_mostrador', 'Lista Mostrador', 'mostrador', 10, 1, 1, 1, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-09 04:14:11'),
-('f4dcda7f-74e1-11f1-8ac9-fa163edb0855', 'efectivo', 'Efectivo', 'efectivo', 20, 1, 0, 0, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-09 04:14:29'),
-('f4dcdbb1-74e1-11f1-8ac9-fa163edb0855', 'web', 'Web', 'web', 40, 1, 0, 0, 1, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-01 00:15:24'),
-('f4dcdbf5-74e1-11f1-8ac9-fa163edb0855', 'mayorista', 'Mayorista', 'mayorista', 50, 1, 0, 0, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-09 04:28:39');
+INSERT INTO `price_lists_name` (`id`, `name`, `sort_order`, `is_active`, `is_default_budget`, `is_default_export`, `is_default_web`, `apply_rounding`, `rounding_mode`, `rounding_step`, `show_decimals`, `prices_include_vat`, `created_at`, `updated_at`) VALUES
+('dd16049d-74f1-11f1-8ac9-fa163edb0855', 'Mercadolibre', 60, 1, 0, 0, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 02:09:17', '2026-07-09 04:29:07'),
+('f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 'Lista Mostrador', 10, 1, 1, 1, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-09 04:14:11'),
+('f4dcda7f-74e1-11f1-8ac9-fa163edb0855', 'Efectivo', 20, 1, 0, 0, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-09 04:14:29'),
+('f4dcdbb1-74e1-11f1-8ac9-fa163edb0855', 'Web', 40, 1, 0, 0, 1, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-01 00:15:24'),
+('f4dcdbf5-74e1-11f1-8ac9-fa163edb0855', 'Mayorista', 50, 1, 0, 0, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-09 04:28:39');
 
 
 

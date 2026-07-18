@@ -1,0 +1,11 @@
+-- Verificar antes de aplicar: no debe haber nombres repetidos.
+SELECT name, COUNT(*) AS total
+FROM price_lists_name
+GROUP BY name
+HAVING COUNT(*) > 1;
+
+-- Si la consulta anterior no devuelve filas, aplicar la correccion.
+ALTER TABLE price_lists_name
+	DROP INDEX uq_price_lists_v2_code,
+	ADD UNIQUE KEY uq_price_lists_v2_name (name),
+	DROP COLUMN code;

@@ -42,9 +42,7 @@ class PriceRepository
                 ELSE 'missing'
             END AS price_group_source,
             pl.id AS price_list_id,
-            pl.code AS price_list_code,
             pl.name AS price_list_name,
-            pl.channel,
             pl.apply_rounding,
             pl.rounding_mode,
             pl.rounding_step,
@@ -119,9 +117,7 @@ class PriceRepository
         $sql = "
         SELECT
             id,
-            code,
             name,
-            channel,
             is_default_budget,
             is_default_export,
             is_default_web,
