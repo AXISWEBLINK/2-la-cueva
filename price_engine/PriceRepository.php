@@ -47,7 +47,6 @@ class PriceRepository
             pl.rounding_mode,
             pl.rounding_step,
             pl.show_decimals,
-            pl.prices_include_vat,
             r.id AS rule_id,
             r.base_markup_percent,
             r.price_markup_percent,

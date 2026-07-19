@@ -51,23 +51,95 @@ No se encontro una primera fila de datos para resumir.
 
 
 
-TABLA: marcas
+TABLA: clientes
 
-CREATE TABLE `marcas` (
-  `id` char(36) COLLATE utf8mb4_general_ci NOT NULL,
-  `nombre` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `slug` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
-  `descripcion` text COLLATE utf8mb4_general_ci,
-  `sitio_web` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `fecha_creacion` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `clientes` (
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT (uuid()),
+  `nombre` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `direccion` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ciudad` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `provincia` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `codigo_postal` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `pais` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `telefono` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `cuit` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `condicion_iva` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `observaciones` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_active` tinyint(1) DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 Mas datos:
-ALTER TABLE `marcas`
+ALTER TABLE `clientes`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_marcas_slug` (`slug`);
+  ADD UNIQUE KEY `uq_clientes_email` (`email`),
+  ADD UNIQUE KEY `uq_clientes_cuit` (`cuit`),
+  ADD KEY `idx_clientes_nombre` (`nombre`);
 
-No se encontro una primera fila de datos para resumir.
+('03a3763d-6488-11f1-afe8-fa163edb0855', 'Cliente prueba', 'urquiza 100', 'P.R Saenz Peña', 'Chaco', NULL, NULL, '3644202020', 'mail@gmail.com', '23269999998', NULL, NULL, '2026-06-10 04:51:16', '2026-06-14 04:11:18', 1)
+
+
+
+TABLA: presupuesto_items
+
+CREATE TABLE `presupuesto_items` (
+  `id` bigint NOT NULL,
+  `presupuesto_id` bigint NOT NULL,
+  `codigo_producto` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre_producto` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `cantidad` int NOT NULL,
+  `precio_unitario` decimal(15,2) NOT NULL,
+  `subtotal` decimal(15,2) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+Mas datos:
+ALTER TABLE `presupuesto_items`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_presupuesto_producto` (`presupuesto_id`,`codigo_producto`),
+  ADD KEY `presupuesto_id` (`presupuesto_id`),
+  ADD KEY `codigo_producto` (`codigo_producto`),
+  ADD KEY `idx_presupuesto_items_orden` (`presupuesto_id`);
+ALTER TABLE `presupuesto_items`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+ALTER TABLE `presupuesto_items`
+  ADD CONSTRAINT `fk_items_presupuesto` FOREIGN KEY (`presupuesto_id`) REFERENCES `presupuestos` (`id`) ON DELETE CASCADE;
+
+(43, 24, 'SWAT448243', '(PRODUCTO DE PRUEBA)  Linterna reforzada 2000x', 2, 19360.00, 38720.00, '2026-07-02 22:11:19', '2026-07-03 04:49:18')
+
+
+
+TABLA: presupuestos
+
+CREATE TABLE `presupuestos` (
+  `id` bigint NOT NULL,
+  `cliente_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `usuario` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nombre_presupuesto` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `total` decimal(15,2) DEFAULT '0.00',
+  `estado` enum('BORRADOR','SEPARADO','ENTREGADO','ENVIADO','CANCELADO') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'BORRADOR',
+  `cobro` enum('SELECCIONAR','EFECTIVO','TARGETA','CUENTA','EFECTIVO + TARJETA','EFECTIVO + CUENTA','TARJETA + CUENTA') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'SELECCIONAR',
+  `facturacion` enum('NO FACTURADO','FACTURADO') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'NO FACTURADO',
+  `nota` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+Mas datos:
+ALTER TABLE `presupuestos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_presupuestos_clientes` (`cliente_id`),
+  ADD KEY `fk_presupuestos_usuarios` (`usuario`);
+ALTER TABLE `presupuestos`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+ALTER TABLE `presupuestos`
+  ADD CONSTRAINT `fk_presupuestos_clientes` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_presupuestos_usuarios` FOREIGN KEY (`usuario`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+(24, NULL, 'ebe90bae-6472-11f1-afe8-fa163edb0855', 'Presupuesto #24', 38720.00, 'BORRADOR', 'SELECCIONAR', 'NO FACTURADO', NULL, '2026-07-02 22:11:19', '2026-07-03 04:49:18')
 
 
 
@@ -78,7 +150,6 @@ CREATE TABLE `price_calculation_rules` (
   `price_group_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Grupo del proveedor tabla price_provider_groups',
   `price_list_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Lista de precios tabla price_lists_name',
   `base_markup_percent` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT 'Recargo tecnico o comercial aplicado sobre el costo ya normalizado',
-  `vat_percent` decimal(9,4) NOT NULL DEFAULT '21.0000' COMMENT 'DEPRECADO: reemplazado por productos.sale_vat_percent; se mantiene temporalmente por compatibilidad con price_engine',
   `price_markup_percent` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT 'Margen comercial',
   `adjustment_percent` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT 'Ajuste final',
   `priority` smallint UNSIGNED NOT NULL DEFAULT '100' COMMENT 'Prioridad futura',
@@ -98,14 +169,14 @@ ALTER TABLE `price_calculation_rules`
   ADD CONSTRAINT `fk_pplr_group` FOREIGN KEY (`price_group_id`) REFERENCES `price_provider_groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_pplr_list` FOREIGN KEY (`price_list_id`) REFERENCES `price_lists_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
-INSERT INTO `price_calculation_rules` (`id`, `price_group_id`, `price_list_id`, `base_markup_percent`, `vat_percent`, `price_markup_percent`, `adjustment_percent`, `priority`, `is_active`, `notes`, `created_at`, `updated_at`) VALUES
-('0727959a-7cf3-11f1-8ac9-fa163edb0855', 'd0152204-7cf2-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-11 06:37:46', '2026-07-11 06:37:46'),
-('1eab65e4-7b4e-11f1-8ac9-fa163edb0855', 'a4373ff7-7b4d-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-09 04:24:47', '2026-07-09 04:25:42'),
-('2429af86-7ceb-11f1-8ac9-fa163edb0855', '048136e7-7cea-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-11 05:41:19', '2026-07-11 05:41:19'),
-('6025c6f8-7b48-11f1-8ac9-fa163edb0855', '6d23372c-7b46-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 100.0000, 0.0000, 100, 1, NULL, '2026-07-09 03:43:40', '2026-07-09 03:43:40'),
-('62f04eb5-7b47-11f1-8ac9-fa163edb0855', '3d34987e-7b46-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-09 03:36:35', '2026-07-09 03:36:35'),
-('6e7d9d04-7b4f-11f1-8ac9-fa163edb0855', '3d34987e-7b46-11f1-8ac9-fa163edb0855', 'f4dcdbf5-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 45.0000, 0.0000, 100, 1, NULL, '2026-07-09 04:34:11', '2026-07-09 04:34:11'),
-('f4cff0b5-7b4c-11f1-8ac9-fa163edb0855', 'a4086b02-7b4b-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 21.0000, 60.0000, -10.0000, 100, 1, NULL, '2026-07-09 04:16:28', '2026-07-09 04:17:47');
+INSERT INTO `price_calculation_rules` (`id`, `price_group_id`, `price_list_id`, `base_markup_percent`, `price_markup_percent`, `adjustment_percent`, `priority`, `is_active`, `notes`, `created_at`, `updated_at`) VALUES
+('0727959a-7cf3-11f1-8ac9-fa163edb0855', 'd0152204-7cf2-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-11 06:37:46', '2026-07-11 06:37:46'),
+('1eab65e4-7b4e-11f1-8ac9-fa163edb0855', 'a4373ff7-7b4d-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-09 04:24:47', '2026-07-09 04:25:42'),
+('2429af86-7ceb-11f1-8ac9-fa163edb0855', '048136e7-7cea-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-11 05:41:19', '2026-07-11 05:41:19'),
+('6025c6f8-7b48-11f1-8ac9-fa163edb0855', '6d23372c-7b46-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 100.0000, 0.0000, 100, 1, NULL, '2026-07-09 03:43:40', '2026-07-09 03:43:40'),
+('62f04eb5-7b47-11f1-8ac9-fa163edb0855', '3d34987e-7b46-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 60.0000, 0.0000, 100, 1, NULL, '2026-07-09 03:36:35', '2026-07-09 03:36:35'),
+('6e7d9d04-7b4f-11f1-8ac9-fa163edb0855', '3d34987e-7b46-11f1-8ac9-fa163edb0855', 'f4dcdbf5-74e1-11f1-8ac9-fa163edb0855', 0.0000, 45.0000, 0.0000, 100, 1, NULL, '2026-07-09 04:34:11', '2026-07-09 04:34:11'),
+('f4cff0b5-7b4c-11f1-8ac9-fa163edb0855', 'a4086b02-7b4b-11f1-8ac9-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 0.0000, 60.0000, -10.0000, 100, 1, NULL, '2026-07-09 04:16:28', '2026-07-09 04:17:47');
 
 
 
@@ -139,7 +210,7 @@ ALTER TABLE `price_campaign_targets`
   ADD CONSTRAINT `fk_pct_price_list` FOREIGN KEY (`price_list_id`) REFERENCES `price_lists_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 INSERT INTO `price_campaign_targets` (`id`, `campaign_id`, `target_type`, `target_uuid`, `price_list_id`, `apply_order`, `priority`, `match_mode`, `is_active`, `notes`, `created_at`, `updated_at`) VALUES
-('1f66ea4f-7bde-11f1-8ac9-fa163edb0855', '6c8e47ec-7bd8-11f1-8ac9-fa163edb0855', 'provider', '412222e6-603e-11f1-afe8-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 100, 100, 'include', 1, NULL, '2026-07-09 21:35:36', '2026-07-10 05:03:06'),
+('1f66ea4f-7bde-11f1-8ac9-fa163edb0855', '6c8e47ec-7bd8-11f1-8ac9-fa163edb0855', 'provider', '412222e6-603e-11f1-afe8-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 100, 100, 'include', 0, NULL, '2026-07-09 21:35:36', '2026-07-14 04:47:53'),
 ('48df06ad-7c0b-11f1-8ac9-fa163edb0855', '6c8e47ec-7bd8-11f1-8ac9-fa163edb0855', 'product', '1124d263-6df9-11f1-afe8-fa163edb0855', 'f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 100, 100, 'include', 1, NULL, '2026-07-10 02:58:53', '2026-07-10 05:05:35');
 
 
@@ -171,10 +242,10 @@ ALTER TABLE `price_campaigns`
   ADD KEY `idx_campaign_active` (`is_active`,`starts_at`,`ends_at`);
 
 INSERT INTO `price_campaigns` (`id`, `code`, `name`, `description`, `discount_type`, `discount_value`, `priority`, `stackable`, `stop_processing`, `starts_at`, `ends_at`, `is_active`, `notes`, `created_at`, `updated_at`) VALUES
-('6c8e428c-7bd8-11f1-8ac9-fa163edb0855', 'HOTSALE', 'Hot Sale', NULL, 'percent', 20.00, 100, 0, 0, NULL, NULL, 1, NULL, '2026-07-09 20:54:48', '2026-07-09 22:07:15'),
-('6c8e46ed-7bd8-11f1-8ac9-fa163edb0855', '15DESCUENTO', '%15 DESCUENTO', NULL, 'percent', 15.00, 90, 0, 0, NULL, NULL, 1, NULL, '2026-07-09 20:54:48', '2026-07-09 22:03:05'),
-('6c8e47ec-7bd8-11f1-8ac9-fa163edb0855', '10DESCUENTO', '%10 DESCUENTO', NULL, 'percent', 10.00, 200, 1, 0, NULL, NULL, 1, NULL, '2026-07-09 20:54:48', '2026-07-09 22:07:00'),
-('6c8e484b-7bd8-11f1-8ac9-fa163edb0855', '19999PRECIOF', '$19999 Precio fijo', NULL, 'fixed_price', 19999.00, 50, 0, 0, NULL, NULL, 1, NULL, '2026-07-09 20:54:48', '2026-07-09 22:37:05');
+('6c8e428c-7bd8-11f1-8ac9-fa163edb0855', 'HOTSALE', 'Hot Sale', NULL, 'percent', 20.00, 100, 0, 0, NULL, NULL, 0, NULL, '2026-07-09 20:54:48', '2026-07-13 03:21:46'),
+('6c8e46ed-7bd8-11f1-8ac9-fa163edb0855', '15DESCUENTO', '%15 DESCUENTO', NULL, 'percent', 15.00, 90, 0, 0, NULL, NULL, 0, NULL, '2026-07-09 20:54:48', '2026-07-13 03:21:47'),
+('6c8e47ec-7bd8-11f1-8ac9-fa163edb0855', '10DESCUENTO', '%10 DESCUENTO', NULL, 'percent', 10.00, 200, 1, 0, NULL, NULL, 1, NULL, '2026-07-09 20:54:48', '2026-07-13 03:24:38'),
+('6c8e484b-7bd8-11f1-8ac9-fa163edb0855', '19999PRECIOF', '$19999 Precio fijo', NULL, 'fixed_price', 19999.00, 50, 0, 0, NULL, NULL, 0, NULL, '2026-07-09 20:54:48', '2026-07-13 03:21:51');
 
 
 
@@ -183,16 +254,12 @@ TABLA: price_lists_name
 CREATE TABLE `price_lists_name` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT (uuid()),
   `name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `sort_order` smallint UNSIGNED NOT NULL DEFAULT '100',
-  `is_active` tinyint(1) NOT NULL DEFAULT '1',
-  `is_default_budget` tinyint(1) NOT NULL DEFAULT '0',
-  `is_default_export` tinyint(1) NOT NULL DEFAULT '0',
-  `is_default_web` tinyint(1) NOT NULL DEFAULT '0',
-  `apply_rounding` tinyint(1) NOT NULL DEFAULT '0',
-  `rounding_mode` enum('none','round','ceil','floor','psychological') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'none',
-  `rounding_step` decimal(10,2) NOT NULL DEFAULT '1.00',
-  `show_decimals` tinyint(1) NOT NULL DEFAULT '1',
-  `prices_include_vat` tinyint(1) NOT NULL DEFAULT '1',
+  `sort_order` smallint UNSIGNED NOT NULL DEFAULT '100' COMMENT 'texto:Orden',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'texto:Activo',
+  `apply_rounding` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'texto:Redondeo',
+  `rounding_mode` enum('none','round','ceil','floor','psychological') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'none' COMMENT 'texto:Redondeo modo enum none=Ningún redondeo,round=Redondeo clásico,ceil=Techo,floor=Piso,psychological=marketing',
+  `rounding_step` decimal(10,2) NOT NULL DEFAULT '1.00' COMMENT 'texto:Redondeo paso',
+  `show_decimals` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 muestra decimal 0 no muestra.texto: Decimales',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -203,12 +270,11 @@ ALTER TABLE `price_lists_name`
   ADD UNIQUE KEY `uq_price_lists_v2_name` (`name`),
   ADD KEY `idx_price_lists_v2_active_order` (`is_active`,`sort_order`);
 
-INSERT INTO `price_lists_name` (`id`, `name`, `sort_order`, `is_active`, `is_default_budget`, `is_default_export`, `is_default_web`, `apply_rounding`, `rounding_mode`, `rounding_step`, `show_decimals`, `prices_include_vat`, `created_at`, `updated_at`) VALUES
-('dd16049d-74f1-11f1-8ac9-fa163edb0855', 'Mercadolibre', 60, 1, 0, 0, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 02:09:17', '2026-07-09 04:29:07'),
-('f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 'Lista Mostrador', 10, 1, 1, 1, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-09 04:14:11'),
-('f4dcda7f-74e1-11f1-8ac9-fa163edb0855', 'Efectivo', 20, 1, 0, 0, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-09 04:14:29'),
-('f4dcdbb1-74e1-11f1-8ac9-fa163edb0855', 'Web', 40, 1, 0, 0, 1, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-01 00:15:24'),
-('f4dcdbf5-74e1-11f1-8ac9-fa163edb0855', 'Mayorista', 50, 1, 0, 0, 0, 0, 'none', 1.00, 1, 1, '2026-07-01 00:15:24', '2026-07-09 04:28:39');
+INSERT INTO `price_lists_name` (`id`, `name`, `sort_order`, `is_active`, `apply_rounding`, `rounding_mode`, `rounding_step`, `show_decimals`, `created_at`, `updated_at`) VALUES
+('dd16049d-74f1-11f1-8ac9-fa163edb0855', 'Mercadolibre', 40, 1, 0, 'none', 1.00, 1, '2026-07-01 02:09:17', '2026-07-18 23:52:01'),
+('f4dcd91d-74e1-11f1-8ac9-fa163edb0855', 'Lista Mostrador', 10, 1, 0, 'none', 1.00, 1, '2026-07-01 00:15:24', '2026-07-09 04:14:11'),
+('f4dcdbb1-74e1-11f1-8ac9-fa163edb0855', 'Web', 30, 1, 0, 'none', 1.00, 1, '2026-07-01 00:15:24', '2026-07-18 23:51:55'),
+('f4dcdbf5-74e1-11f1-8ac9-fa163edb0855', 'Mayorista', 20, 1, 0, 'none', 1.00, 1, '2026-07-01 00:15:24', '2026-07-18 23:51:43');
 
 
 
@@ -273,6 +339,7 @@ TABLA: price_provider_groups
 CREATE TABLE `price_provider_groups` (
   `id` char(36) COLLATE utf8mb4_general_ci NOT NULL DEFAULT (uuid()) COMMENT 'UUID del grupo',
   `proveedor_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'tabla provider',
+  `list_filtro` enum('LISTA GENERAL','LISTA DE GRUPOS') COLLATE utf8mb4_general_ci DEFAULT 'LISTA GENERAL',
   `group_code` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'GENERAL, ARMAS, STANLEY',
   `nombre` varchar(150) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Nombre del grupo',
   `descripcion` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -291,13 +358,13 @@ ALTER TABLE `price_provider_groups`
 ALTER TABLE `price_provider_groups`
   ADD CONSTRAINT `fk_price_provider_groups_provider` FOREIGN KEY (`proveedor_id`) REFERENCES `provider` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
-INSERT INTO `price_provider_groups` (`id`, `proveedor_id`, `group_code`, `nombre`, `descripcion`, `orden`, `is_default`, `is_active`, `created_at`, `updated_at`) VALUES
-('048136e7-7cea-11f1-8ac9-fa163edb0855', '390d2b6c-70f3-11f1-afe8-fa163edb0855', 'GENERAL', 'general', 'GENERAL Z PROVEEDOR PRUEBA', 100, 1, 1, '2026-07-11 05:33:16', '2026-07-13 01:30:03'),
-('3d34987e-7b46-11f1-8ac9-fa163edb0855', '412222e6-603e-11f1-afe8-fa163edb0855', 'GENERAL', 'General', 'General de Proveedor      Baraldo', 100, 1, 1, '2026-07-09 03:28:22', '2026-07-09 04:08:18'),
-('6d23372c-7b46-11f1-8ac9-fa163edb0855', '412222e6-603e-11f1-afe8-fa163edb0855', 'ACEITES', 'Aceites', 'Grupo: Aceites proveedor Baraldo', 100, 0, 1, '2026-07-09 03:29:43', '2026-07-09 04:09:13'),
-('a4086b02-7b4b-11f1-8ac9-fa163edb0855', 'fe2762bf-6adf-11f1-afe8-fa163edb0855', 'GENERAL', 'General', 'General de Proveedor      Wescamp', 100, 1, 1, '2026-07-09 04:07:02', '2026-07-09 04:08:32'),
-('a4373ff7-7b4d-11f1-8ac9-fa163edb0855', 'fe2762bf-6adf-11f1-afe8-fa163edb0855', 'CONTIGO', 'Contigo', 'Grupo Contigo de proveedor Wescamp', 100, 0, 1, '2026-07-09 04:21:22', '2026-07-09 04:21:22'),
-('d0152204-7cf2-11f1-8ac9-fa163edb0855', '3758f6fe-28e0-11f1-8125-fa163edb0855', 'GENERAL', 'GENERAL FISHING', 'GENERAL FISHING', 100, 1, 1, '2026-07-11 06:36:14', '2026-07-13 01:30:03');
+INSERT INTO `price_provider_groups` (`id`, `proveedor_id`, `list_filtro`, `group_code`, `nombre`, `descripcion`, `orden`, `is_default`, `is_active`, `created_at`, `updated_at`) VALUES
+('048136e7-7cea-11f1-8ac9-fa163edb0855', '390d2b6c-70f3-11f1-afe8-fa163edb0855', 'LISTA GENERAL', 'GENERAL', 'General', 'GENERAL Z PROVEEDOR PRUEBA', 100, 1, 1, '2026-07-11 05:33:16', '2026-07-18 23:29:53'),
+('3d34987e-7b46-11f1-8ac9-fa163edb0855', '412222e6-603e-11f1-afe8-fa163edb0855', 'LISTA GENERAL', 'GENERAL', 'General', 'General de Proveedor      Baraldo', 100, 1, 1, '2026-07-09 03:28:22', '2026-07-09 04:08:18'),
+('6d23372c-7b46-11f1-8ac9-fa163edb0855', '412222e6-603e-11f1-afe8-fa163edb0855', 'LISTA DE GRUPOS', 'ACEITES', 'Aceites', 'Grupo: Aceites proveedor Baraldo', 100, 0, 1, '2026-07-09 03:29:43', '2026-07-19 00:21:31'),
+('a4086b02-7b4b-11f1-8ac9-fa163edb0855', 'fe2762bf-6adf-11f1-afe8-fa163edb0855', 'LISTA GENERAL', 'GENERAL', 'General', 'General de Proveedor      Wescamp', 100, 1, 1, '2026-07-09 04:07:02', '2026-07-09 04:08:32'),
+('a4373ff7-7b4d-11f1-8ac9-fa163edb0855', 'fe2762bf-6adf-11f1-afe8-fa163edb0855', 'LISTA DE GRUPOS', 'CONTIGO', 'Contigo', 'Grupo Contigo de proveedor Wescamp', 100, 0, 1, '2026-07-09 04:21:22', '2026-07-19 00:21:51'),
+('d0152204-7cf2-11f1-8ac9-fa163edb0855', '3758f6fe-28e0-11f1-8125-fa163edb0855', 'LISTA GENERAL', 'GENERAL', 'General', 'GENERAL FISHING', 100, 1, 1, '2026-07-11 06:36:14', '2026-07-18 23:29:38');
 
 
 
@@ -371,22 +438,19 @@ ALTER TABLE `productos`
   ADD KEY `idx_productos_provider_group_currency` (`proveedor_id`,`price_group_id`,`moneda`);
 ALTER TABLE `productos` ADD FULLTEXT KEY `ft_name_name2` (`name`,`name2`);
 ALTER TABLE `productos`
-  MODIFY `increm` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18924;
+  MODIFY `increm` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18930;
 ALTER TABLE `productos`
-  ADD CONSTRAINT `fk_producto_proveedor` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_producto_proveedor` FOREIGN KEY (`proveedor_id`) REFERENCES `provider` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   ADD CONSTRAINT `fk_productos_marca` FOREIGN KEY (`marca_id`) REFERENCES `marcas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_productos_moneda` FOREIGN KEY (`moneda`) REFERENCES `price_moneda` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_productos_price_group` FOREIGN KEY (`price_group_id`) REFERENCES `price_provider_groups` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_productos_primary_media` FOREIGN KEY (`primary_media_id`) REFERENCES `media` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_productos_proveedor` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_productos_proveedor` FOREIGN KEY (`proveedor_id`) REFERENCES `provider` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_productos_provider` FOREIGN KEY (`proveedor_id`) REFERENCES `provider` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-INSERT INTO `productos` (`increm`, `id`, `id_producto`, `sku`, `gtin13`, `name`, `name2`, `proveedor_id`, `price_group_id`, `proveedor_name`, `regular_price`, `cost_type`, `purchase_vat_percent`, `sale_vat_percent`, `regular_dolar`, `price_manual`, `stock`, `porcen_regular_price`, `pro_nota`, `pro_oferta`, `pro_favorito`, `pro_cant_ventas`, `pro_local`, `pro_create_auto`, `moneda`, `cat_1`, `cat_2`, `cat_3`, `cat_4`, `description`, `marca`, `marca_id`, `slug`, `json_extra`, `created_at`, `updated_at`, `public_handle`, `public_enabled`, `primary_media_id`) VALUES
-(11505, '5dc0b2fd-6410-11f1-afe8-fa163edb0855', NULL, '150300', NULL, 'ACEITE BORO DESENGRASANTE P/ARM.NARANJA', NULL, '412222e6-603e-11f1-afe8-fa163edb0855', '6d23372c-7b46-11f1-8ac9-fa163edb0855', 'BARALDO', 18080.00, 'gross', 21.00, 21.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 1, 1, 'ARMERIA', 'ACCESORIOS ARMERIA', 'ACEITES Y LUBRICANTES', NULL, NULL, 'BORO', NULL, NULL, NULL, '2026-06-09 11:34:48', '2026-07-09 02:35:54', NULL, 0, NULL),
-(18476, '1124d263-6df9-11f1-afe8-fa163edb0855', NULL, '101-CTG-1182ML-BC', NULL, 'TERMO CONTIGO THERMAL BOTTLE 1182ML - BLUE CORN', NULL, 'fe2762bf-6adf-11f1-afe8-fa163edb0855', 'a4373ff7-7b4d-11f1-8ac9-fa163edb0855', 'WESCAMP', 50673.00, 'gross', 21.00, 21.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 0, 1, 'CONTIGO', 'TERMOS', 'TERMOS 1182ML', NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-22 02:13:12', '2026-07-10 03:32:07', NULL, 0, NULL),
-(11506, '5dc0b863-6410-11f1-afe8-fa163edb0855', NULL, '150301', NULL, 'ACEITE BORO DESENCOBRANTE P/ARMAS AZUL', NULL, '412222e6-603e-11f1-afe8-fa163edb0855', NULL, 'BARALDO', 18080.00, 'gross', 21.00, 21.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 1, 1, 'ARMERIA', 'ACCESORIOS ARMERIA', 'ACEITES Y LUBRICANTES', NULL, NULL, 'BORO', NULL, NULL, NULL, '2026-06-09 11:34:48', '2026-07-11 03:27:10', NULL, 0, NULL),
-(18919, 'd56ab0d2-7191-11f1-afe8-fa163edb0855', NULL, 'SWAT448243', NULL, 'Linterna reforzada 2000x (PRUEBA)', NULL, '390d2b6c-70f3-11f1-afe8-fa163edb0855', NULL, 'z PROVEEDOR DE PRUEBA', 10000.00, 'gross', 21.00, 21.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-26 16:04:18', '2026-07-04 16:22:28', NULL, 0, '49640532-750f-11f1-8ac9-fa163edb0855');
-(6479, '914a7681-63ba-11f1-afe8-fa163edb0855', NULL, '3647', NULL, 'Tapón mediano c/ luz - Unidad', NULL, '3758f6fe-28e0-11f1-8125-fa163edb0855', NULL, 'FISHING', 6885.00, 'gross', 21.00, 21.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 1, 1, 'varios', 'TAPÓN PARA MATE', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-09 01:20:37', '2026-07-04 14:18:26', NULL, 0, NULL),
+(18476, '1124d263-6df9-11f1-afe8-fa163edb0855', NULL, '101-CTG-1182ML-BC', NULL, 'TERMO CONTIGO THERMAL BOTTLE 1182ML - BLUE CORN', NULL, 'fe2762bf-6adf-11f1-afe8-fa163edb0855', 'a4373ff7-7b4d-11f1-8ac9-fa163edb0855', 'WESCAMP', 50673.00, 'net', 21.00, 21.00, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 0, 1, 'CONTIGO', 'TERMOS', 'TERMOS 1182ML', NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-22 02:13:12', '2026-07-13 00:13:09', NULL, 0, NULL)
+
+
 
 TABLA: provider
 
@@ -411,6 +475,7 @@ INSERT INTO `provider` (`id`, `slug`, `nombre`, `notas`, `delete_block`, `create
 ('390d2b6c-70f3-11f1-afe8-fa163edb0855', 'el-flaco-srl-prueba', 'z PROVEEDOR DE PRUEBA', NULL, 0, '2026-06-26 00:08:56', '2026-07-12 23:29:50'),
 ('3f675169-25a1-11f1-8125-fa163edb0855', 'suri', 'SURI', NULL, 1, '2026-06-10 05:03:24', '2026-07-12 23:29:50'),
 ('412222e6-603e-11f1-afe8-fa163edb0855', 'baraldo', 'BARALDO', NULL, 1, '2026-06-10 05:03:24', '2026-07-12 23:29:50'),
+('4ae5469d-7e7f-11f1-8ac9-fa163edb0855', 'zprobando', 'zprobando', NULL, 0, '2026-07-13 05:54:20', '2026-07-13 05:54:20'),
 ('5f2420dc-6bda-11f1-afe8-fa163edb0855', 'swat-point', 'SWAT POINT', NULL, 0, '2026-06-19 12:28:26', '2026-07-12 23:29:50'),
 ('90088a49-7555-11f1-8ac9-fa163edb0855', 'gonzalo-galan', 'GONZALO GALAN', NULL, 0, '2026-07-12 23:29:50', '2026-07-12 23:29:50'),
 ('b160215f-740a-11f1-8ac9-fa163edb0855', 'apolo', 'APOLO', NULL, 0, '2026-06-29 22:34:29', '2026-07-12 23:29:50'),
@@ -418,3 +483,56 @@ INSERT INTO `provider` (`id`, `slug`, `nombre`, `notas`, `delete_block`, `create
 ('df507329-6b54-11f1-afe8-fa163edb0855', 'guardatti', 'GUARDATTI', NULL, 1, '2026-06-18 20:32:49', '2026-07-12 23:29:50'),
 ('e0f09e4c-66d9-11f1-afe8-fa163edb0855', 'de-prueba', 'DE PRUEBA', NULL, 1, '2026-06-13 03:42:19', '2026-07-12 23:29:50'),
 ('fe2762bf-6adf-11f1-afe8-fa163edb0855', 'wescamp', 'WESCAMP', NULL, 1, '2026-06-18 06:36:09', '2026-07-12 23:29:50');
+
+
+
+TABLA: roles
+
+CREATE TABLE `roles` (
+  `role_id` int NOT NULL,
+  `role_name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `porcentage` int DEFAULT '0',
+  `is_active` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+Mas datos:
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`role_id`),
+  ADD UNIQUE KEY `role_name` (`role_name`);
+ALTER TABLE `roles`
+  MODIFY `role_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+(1, 'Administrador', 'Acceso total al sistema', NULL, 1, '2025-11-29 22:41:53', '2025-11-29 22:41:53')
+
+
+
+TABLA: usuarios
+
+CREATE TABLE `usuarios` (
+  `user_increment` int NOT NULL,
+  `first_name` varchar(15) DEFAULT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role_id` int NOT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  `delete_block` tinyint NOT NULL DEFAULT '0',
+  `sistema_login` tinyint NOT NULL DEFAULT '0' COMMENT '0 no pide acceso 1|pide acseso',
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+Mas datos:
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `uq_username` (`username`),
+  ADD UNIQUE KEY `uq_user_increment` (`user_increment`),
+  ADD KEY `fk_usuarios_roles` (`role_id`);
+ALTER TABLE `usuarios`
+  ADD CONSTRAINT `fk_usuarios_roles` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`);
+
+(70, 'usuario de prue', 'usuario de prueba', '88888888', 3, 1, 0, 0, '65ce1348-6742-11f1-afe8-fa163edb0855', '2026-06-13 16:10:29', '2026-06-14 03:50:43')
